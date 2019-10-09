@@ -23,40 +23,51 @@ using namespace vex;
 vex::brain       Brain;
 
 // define your global instances of motors and other devices here
-vex::motor RightMotor   = vex::motor( vex::PORT2, true );
-vex::motor LeftMotor  = vex::motor( vex::PORT3, false );
+vex::motor RightMotor   = vex::motor( vex::PORT1, true );
+vex::motor LeftMotor  = vex::motor( vex::PORT10, false );
 vex::line line_tracker( Brain.ThreeWirePort.A );
-vex::drivetrain dt( RightMotor, LeftMotor ); 
+vex::drivetrain dt( LeftMotor, RightMotor ); 
+vex::sonar ultra(Brain.ThreeWirePort.A);
+
+vex::bumper bumpy( Brain.ThreeWirePort.C );
 
 bool see_white_line( int value ) {
-    return value <= 67;
+  return value <= 67;
 }
 
 int main() {
-    vex::task::sleep( 3000 );
-    // Brain.Screen.print("TurnyTurny Program has Started.");
+  Brain.Screen.print("TurnyTurny Program has Started.");
 
-    dt.setVelocity(30, velocityUnits::pct);
+  vex::task::sleep(3000);
 
-    while ( true )
+  dt.setVelocity(20, velocityUnits::pct);
+
+  dt.driveFor(directionType::fwd, 30, distanceUnits::cm );
+
+  while ( true )
+  {
+    Brain.Screen.print("sensor value:%d", ultra.value());
+    Brain.Screen.newLine();
+    if ( see_white_line( line_tracker.value( pct ) ) )
     {
-      if ( see_white_line( line_tracker.value( pct ) ) )
-      {
-        dt.stop();
-        break;
-      }
-      else 
-      {
-        dt.drive(fwd);
-      }
+      dt.stop();
+      break;
     }
-
-    dt.driveFor( directionType::rev, 5, distanceUnits::cm );
-
-    LeftMotor.spinFor( 210, vex::rotationUnits::deg, false );
-    RightMotor.spinFor( -210, vex::rotationUnits::deg );
-
-    while(1) {
-      vex::task::sleep(100);
+    else 
+    {
+      dt.drive(directionType::fwd);
     }
+  }
+
+  dt.driveFor( directionType::fwd, 7, distanceUnits::cm );
+
+  LeftMotor.spinFor( 235*2, vex::rotationUnits::deg );
+
+  vex::task::sleep(1000);
+
+  LeftMotor.spinFor( -235*2, vex::rotationUnits::deg );
+
+  while(1) {
+    vex::task::sleep(100);
+  }
 }
