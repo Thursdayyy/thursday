@@ -10,34 +10,15 @@
 #include "vex.h"
 
 #include "LineTracker.h"
+#include "PortConfig.h"
 
 using namespace vex;
-
-// A global instance of vex::brain used for printing to the V5 brain screen
-vex::brain       Brain;
-
-// define your global instances of motors and other devices here
-// MOTORS
-vex::motor RightMotor = vex::motor( vex::PORT1, true );
-vex::motor LeftMotor = vex::motor( vex::PORT10, false );
-vex::drivetrain dt( LeftMotor, RightMotor ); 
-
-// SENSORS
-vex::line line_tracker_left( Brain.ThreeWirePort.G );
-vex::line line_tracker_right( Brain.ThreeWirePort.H );
-vex::sonar ultra(Brain.ThreeWirePort.A);
-vex::bumper bumpy( Brain.ThreeWirePort.F );
 
 // Prints a formatted std::string to the VEX Brain screen
 void println( const char* c_str )
 {
   Brain.Screen.print( c_str );
   Brain.Screen.newLine();
-}
-
-bool over_line( vex::line& line_tracker ) // TODO: Make classes for each sensor
-{
-  return line_tracker.value( analogUnits::pct ) <= LINE_ANALOG_PCT;
 }
 
 int main() {
@@ -72,7 +53,7 @@ int main() {
     Brain.Screen.newLine();
 
     // stop at a cross-mark
-    if ( over_line( line_tracker_left ) && over_line( line_tracker_right ) )
+    if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
     {
       dt.stop();
       break;
