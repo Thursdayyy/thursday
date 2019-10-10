@@ -1,0 +1,39 @@
+static const char pi[] = "031415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185"; 
+unsigned int digit = 0;
+byte cnt=0;
+void setup() {
+  
+  Serial.begin(9600);
+  int i = 0;
+  for(i = 2; i <= 11; i++)
+  {
+    pinMode(i, OUTPUT);
+    digitalWrite(i, HIGH);
+  }
+ 
+   delay(5000);
+
+   //press the Judge button (0)
+   cnt = (pi[digit] - '0') + 2;
+   digitalWrite(cnt, LOW);
+   delay(100);
+   digitalWrite(cnt, HIGH);
+   delay(5000);
+   
+}
+
+void loop() {
+  
+    //read digit
+    cnt = (pi[digit++] - '0') + 2;
+
+    //turn on for #ms
+    digitalWrite(cnt, LOW);
+    delay(150);
+    
+    //turn off for #ms
+    digitalWrite(cnt, HIGH);
+    delay(150);
+
+
+}
