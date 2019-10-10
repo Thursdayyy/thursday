@@ -6,16 +6,10 @@
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-// Drive Forward
-// This program instructs your robot to move forward at half power for three
-// seconds. There is a two second pause at the beginning of the program.
-//
-// Robot Configuration: 
-// [Smart Port]    [Name]        [Type]           [Description]       [Reversed]
-// Motor Port 1    LeftMotor     V5 Smart Motor    Left side motor     false
-// Motor Port 10   RightMotor    V5 Smart Motor    Right side motor    true
-//
+
 #include "vex.h"
+
+#include "LineTracker.h"
 
 using namespace vex;
 
@@ -23,40 +17,94 @@ using namespace vex;
 vex::brain       Brain;
 
 // define your global instances of motors and other devices here
-vex::motor RightMotor   = vex::motor( vex::PORT2, true );
-vex::motor LeftMotor  = vex::motor( vex::PORT3, false );
-vex::line line_tracker( Brain.ThreeWirePort.A );
-vex::drivetrain dt( RightMotor, LeftMotor ); 
+// MOTORS
+vex::motor RightMotor = vex::motor( vex::PORT1, true );
+vex::motor LeftMotor = vex::motor( vex::PORT10, false );
+vex::drivetrain dt( LeftMotor, RightMotor ); 
 
-bool see_white_line( int value ) {
-    return value <= 67;
+// SENSORS
+vex::line line_tracker_left( Brain.ThreeWirePort.G );
+vex::line line_tracker_right( Brain.ThreeWirePort.H );
+vex::sonar ultra(Brain.ThreeWirePort.A);
+vex::bumper bumpy( Brain.ThreeWirePort.F );
+
+// Prints a formatted std::string to the VEX Brain screen
+void println( const char* c_str )
+{
+  Brain.Screen.print( c_str );
+  Brain.Screen.newLine();
+}
+
+bool over_line( vex::line& line_tracker ) // TODO: Make classes for each sensor
+{
+  return line_tracker.value( analogUnits::pct ) <= LINE_ANALOG_PCT;
 }
 
 int main() {
-    vex::task::sleep( 3000 );
-    // Brain.Screen.print("TurnyTurny Program has Started.");
+  // Brain.Screen.print("TurnyTurny Program has Started.");
+  // Brain.Screen.newLine();
 
-    dt.setVelocity(30, velocityUnits::pct);
+  println( "TurnyTurny Program has Started." );
 
-    while ( true )
+  dt.setVelocity(20, velocityUnits::pct);
+  vex::task::sleep(4500);
+
+  // drop off the button assembly
+  while(true)
+  {
+    if( !bumpy.pressing() )
     {
-      if ( see_white_line( line_tracker.value( pct ) ) )
-      {
-        dt.stop();
-        break;
-      }
-      else 
-      {
-        dt.drive(fwd);
-      }
+      dt.drive(directionType::rev);
     }
-
-    dt.driveFor( directionType::rev, 5, distanceUnits::cm );
-
-    LeftMotor.spinFor( 210, vex::rotationUnits::deg, false );
-    RightMotor.spinFor( -210, vex::rotationUnits::deg );
-
-    while(1) {
-      vex::task::sleep(100);
+    else {
+      dt.stop();
+      vex::task::sleep(3000);
+      break;
     }
+  }
+
+  // drive past starting square (for now 13 is an arbitrary value that gets us past the square. Probably need to use the line sensors to determine when we've passed the square)
+  dt.driveFor(directionType::fwd, 13, distanceUnits::in );
+
+  // go down center line and search for bins
+  while ( true )
+  {
+    Brain.Screen.newLine();
+
+    // stop at a cross-mark
+    if ( over_line( line_tracker_left ) && over_line( line_tracker_right ) )
+    {
+      dt.stop();
+      break;
+    }
+    else 
+    {
+      dt.drive(directionType::fwd);
+    }
+  }
+
+  // need to back up a slight bit in order for the front wheels to not collide with the bin wall when turning in
+  dt.driveFor( directionType::rev, 3.5, distanceUnits::in );
+
+  LeftMotor.spinFor( 235*2, vex::rotationUnits::deg );
+
+  vex::task::sleep(500);
+
+  // for now using a distance marker to know how far to back out
+  double dist = ultra.distance(distanceUnits::in);
+  
+  while( ultra.distance(distanceUnits::in) > 3.4 )
+  {
+    dt.drive(directionType::fwd);
+  }
+  dt.stop();
+  vex::task::sleep(3000);
+
+  while( ultra.distance(distanceUnits::in) < dist )
+  {
+    dt.drive(directionType::rev);
+  }
+  dt.stop();
+
+  LeftMotor.spinFor( -233*2, vex::rotationUnits::deg );
 }
