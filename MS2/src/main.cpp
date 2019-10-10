@@ -21,15 +21,9 @@ void println( const char* c_str )
   Brain.Screen.newLine();
 }
 
-int main() {
-  // Brain.Screen.print("TurnyTurny Program has Started.");
-  // Brain.Screen.newLine();
-
-  println( "TurnyTurny Program has Started." );
-
-  dt.setVelocity(20, velocityUnits::pct);
-  vex::task::sleep(4500);
-
+//FUNCTIONS
+void ButtonDrop()
+{
   // drop off the button assembly
   while(true)
   {
@@ -44,48 +38,104 @@ int main() {
     }
   }
 
-  // drive past starting square (for now 13 is an arbitrary value that gets us past the square. Probably need to use the line sensors to determine when we've passed the square)
-  dt.driveFor(directionType::fwd, 13, distanceUnits::in );
+  // move past the starting square
+  while ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
+  {
+    dt.drive(fwd);
+  }
+}
 
+//TODO
+void FollowLine()
+{
   // go down center line and search for bins
   while ( true )
   {
-    Brain.Screen.newLine();
-
+  //   if ( line_tracker_front.sees_line() )
+  //   {
+  //     dt.drive(fwd);
+  //     continue;
+  //   }
+  //   else
+  //   {
+  //     if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
+  //     {
+  //       continue;
+  //     }
+  //     if ( line_tracker_left.sees_line() )
+  //     {
+  //       dt.stop();
+  //       LeftMotor.spinFor(3, rotationUnits::deg);
+  //     }
+  //     else if ( line_tracker_right.sees_line() )
+  //     {
+  //       dt.stop();
+  //       RightMotor.spinFor(3, rotationUnits::deg);
+  //     }
+  //   }
     // stop at a cross-mark
     if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
     {
       dt.stop();
-      break;
+      return;
     }
     else 
     {
       dt.drive(directionType::fwd);
     }
   }
+}
 
-  // need to back up a slight bit in order for the front wheels to not collide with the bin wall when turning in
-  dt.driveFor( directionType::rev, 3.5, distanceUnits::in );
+void BackItUp( double distance ) 
+{
+  dt.driveFor( directionType::rev, distance, DUNITS );
+}
 
-  LeftMotor.spinFor( 235*2, vex::rotationUnits::deg );
+void Forward( double distance )
+{
+  dt.driveFor( directionType::fwd, distance, DUNITS );
+}
 
-  vex::task::sleep(500);
+bool OverCross()
+{
+  return !line_tracker_left.sees_line() && !line_tracker_right.sees_line();
+}
+
+int main() {
+  // Brain.Screen.print("TurnyTurny Program has Started.");
+  // Brain.Screen.newLine();
+
+  println( "TurnyTurny Program has Started." );
+
+  dt.setVelocity(15, velocityUnits::pct);
+  vex::task::sleep(4500);
+
+  ButtonDrop();
+
+  FollowLine();
+  
+  BackItUp( 3.5 );
+
+  // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
+  RightMotor.spinFor( 235*2, vex::rotationUnits::deg );
 
   // for now using a distance marker to know how far to back out
-  double dist = ultra.distance(distanceUnits::in);
   
-  while( ultra.distance(distanceUnits::in) > 3.4 )
+  while( ultra.distance(DUNITS) > 3.4 )
   {
-    dt.drive(directionType::fwd);
+    dt.drive( directionType::fwd );
   }
   dt.stop();
+
+  // blocks do their thang
   vex::task::sleep(3000);
 
-  while( ultra.distance(distanceUnits::in) < dist )
+  while ( !line_tracker_left.sees_line() && !line_tracker_right.sees_line() )
   {
-    dt.drive(directionType::rev);
+    dt.drive( directionType::rev );
   }
   dt.stop();
 
-  LeftMotor.spinFor( -233*2, vex::rotationUnits::deg );
+  RightMotor.spinFor( -233, vex::rotationUnits::deg, false );
+  LeftMotor.spinFor( 233, vex::rotationUnits::deg );
 }
