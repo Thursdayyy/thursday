@@ -9,6 +9,8 @@
 
 #include "vex.h"
 
+#include "LineTracker.h"
+
 using namespace vex;
 
 // A global instance of vex::brain used for printing to the V5 brain screen
@@ -26,13 +28,6 @@ vex::line line_tracker_right( Brain.ThreeWirePort.H );
 vex::sonar ultra(Brain.ThreeWirePort.A);
 vex::bumper bumpy( Brain.ThreeWirePort.F );
 
-constexpr int LINE_ANALOG_PCT = 65;
-
-bool over_line( vex::line& line_tracker ) // TODO: Make classes for each sensor
-{
-  return line_tracker.value( analogUnits::pct ) <= LINE_ANALOG_PCT;
-}
-
 // Prints a formatted std::string to the VEX Brain screen
 void println( const char* c_str )
 {
@@ -40,11 +35,16 @@ void println( const char* c_str )
   Brain.Screen.newLine();
 }
 
+bool over_line( vex::line& line_tracker ) // TODO: Make classes for each sensor
+{
+  return line_tracker.value( analogUnits::pct ) <= LINE_ANALOG_PCT;
+}
+
 int main() {
   // Brain.Screen.print("TurnyTurny Program has Started.");
   // Brain.Screen.newLine();
 
-  println( "TurnyTurnt Program has Started." );
+  println( "TurnyTurny Program has Started." );
 
   dt.setVelocity(20, velocityUnits::pct);
   vex::task::sleep(4500);
