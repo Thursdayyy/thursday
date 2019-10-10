@@ -14,7 +14,11 @@ vex::motor LeftMotor = vex::motor( vex::PORT10, false );
 vex::drivetrain dt( LeftMotor, RightMotor ); 
 
 // SENSORS
-LineTracker line_tracker_left( line(Brain.ThreeWirePort.G) );
-LineTracker line_tracker_right( line(Brain.ThreeWirePort.H) );
+LineTracker line_tracker_left( line(Brain.ThreeWirePort.H) );
+LineTracker line_tracker_right( line(Brain.ThreeWirePort.G) );
+LineTracker line_tracker_front( line( Brain.ThreeWirePort.E) );
 vex::sonar ultra(Brain.ThreeWirePort.A);
 vex::bumper bumpy( Brain.ThreeWirePort.F );
+
+// UNITS
+auto DUNITS = distanceUnits::in;
