@@ -12,5 +12,4 @@ public:
   LineTracker( const line &lt ): line_tracker( lt ) {}
 
   bool sees_line() { return line_tracker.value( analogUnits::pct ) <= LINE_ANALOG_PCT; }
-
 };
