@@ -24,6 +24,8 @@ void println( const char* c_str )
 //FUNCTIONS
 void ButtonDrop()
 {
+  const double vel = 20;
+  dt.setVelocity(vel, velocityUnits::pct);
   // drop off the button assembly
   while(true)
   {
@@ -50,12 +52,12 @@ void FollowLine()
 {
   const int vel = 20;
   double i = 0;
-  const double accel = .05;
+  const double vel_offset = .1;
 
   LeftMotor.setVelocity( vel, percentUnits::pct );
   RightMotor.setVelocity( vel, percentUnits::pct );
   dt.drive(fwd);
-  
+
   // go down center line and search for bins
   while ( true )
   {
@@ -63,17 +65,17 @@ void FollowLine()
       {
         dt.stop();
         return;
-        continue;
+        // continue;
       }
 
       if ( line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) // 1 0
       {
-        i += accel;
+        i += vel_offset;
         RightMotor.setVelocity( vel + i, percentUnits::pct );
       }
       else if ( !line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 0 1
       {
-        i += accel;
+        i += vel_offset;
         LeftMotor.setVelocity( vel + i, percentUnits::pct );
       }
       else if ( !line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) { // 0 0
@@ -108,9 +110,6 @@ int main() {
 
   dt.setVelocity(15, velocityUnits::pct);
   vex::task::sleep(4500);
-
-  FollowLine();
-  return 0;
 
   ButtonDrop();
 
