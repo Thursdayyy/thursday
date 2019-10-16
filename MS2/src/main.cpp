@@ -55,6 +55,7 @@ void FollowLine()
   LeftMotor.setVelocity( vel, percentUnits::pct );
   RightMotor.setVelocity( vel, percentUnits::pct );
   dt.drive(fwd);
+  
   // go down center line and search for bins
   while ( true )
   {
@@ -67,19 +68,13 @@ void FollowLine()
 
       if ( line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) // 1 0
       {
-        // if ( i < 5 )
-          i += accel;
+        i += accel;
         RightMotor.setVelocity( vel + i, percentUnits::pct );
-        // LeftMotor.setVelocity( vel - i, percentUnits::pct );
-        // LeftMotor.spinFor(-3, rotationUnits::deg);
       }
       else if ( !line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 0 1
       {
-        // if ( i < 5 )
-          i += accel;
-        // RightMotor.setVelocity( vel - i, percentUnits::pct );
+        i += accel;
         LeftMotor.setVelocity( vel + i, percentUnits::pct );
-        // RightMotor.spinFor(-3, rotationUnits::deg);
       }
       else if ( !line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) { // 0 0
         i = 0;
@@ -88,17 +83,6 @@ void FollowLine()
       }
     vex::task::sleep(90);
   }
-  //   // stop at a cross-mark
-  //   if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
-  //   {
-  //     dt.stop();
-  //     return;
-  //   }
-  //   else 
-  //   {
-  //     dt.drive(directionType::fwd);
-  //   }
-  // }
 }
 
 void BackItUp( double distance ) 
