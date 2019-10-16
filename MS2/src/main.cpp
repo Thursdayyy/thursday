@@ -20,7 +20,24 @@ void println( const char* c_str )
   Brain.Screen.print( c_str );
   Brain.Screen.newLine();
 }
-
+// Stamps down and raises the blocks
+void raise_blocks(){
+    vex::task::sleep( 3000 );
+    // Open the Door
+    CamMotor.spinTo(90,vex::rotationUnits::deg, true );
+    // Stamp downt the blocks
+    BlockMotor.setVelocity(40,velocityUnits::pct);
+    BlockMotor.spin(directionType::fwd);
+    wait(1.5,vex::timeUnits::sec);
+    BlockMotor.stop();
+    // Pick up new blocks
+    BlockMotor.spin(directionType::rev);
+    wait(4,vex::timeUnits::sec);
+    BlockMotor.stop();
+    // Shut the door
+    CamMotor.spinTo(0, vex::rotationUnits::deg,true);
+    return;
+}
 //FUNCTIONS
 void ButtonDrop()
 {
@@ -129,6 +146,8 @@ int main() {
   dt.stop();
 
   // blocks do their thang
+  raise_blocks();
+
   vex::task::sleep(3000);
 
   while ( !line_tracker_left.sees_line() && !line_tracker_right.sees_line() )
