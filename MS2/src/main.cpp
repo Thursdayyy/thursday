@@ -24,6 +24,8 @@ void println( const char* c_str )
 //FUNCTIONS
 void ButtonDrop()
 {
+  const double vel = 20;
+  dt.setVelocity(vel, velocityUnits::pct);
   // drop off the button assembly
   while(true)
   {
@@ -48,41 +50,40 @@ void ButtonDrop()
 //TODO
 void FollowLine()
 {
+  const int vel = 20;
+  double i = 0;
+  const double vel_offset = .1;
+
+  LeftMotor.setVelocity( vel, percentUnits::pct );
+  RightMotor.setVelocity( vel, percentUnits::pct );
+  dt.drive(fwd);
+
   // go down center line and search for bins
   while ( true )
   {
-  //   if ( line_tracker_front.sees_line() )
-  //   {
-  //     dt.drive(fwd);
-  //     continue;
-  //   }
-  //   else
-  //   {
-  //     if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
-  //     {
-  //       continue;
-  //     }
-  //     if ( line_tracker_left.sees_line() )
-  //     {
-  //       dt.stop();
-  //       LeftMotor.spinFor(3, rotationUnits::deg);
-  //     }
-  //     else if ( line_tracker_right.sees_line() )
-  //     {
-  //       dt.stop();
-  //       RightMotor.spinFor(3, rotationUnits::deg);
-  //     }
-  //   }
-    // stop at a cross-mark
-    if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
-    {
-      dt.stop();
-      return;
-    }
-    else 
-    {
-      dt.drive(directionType::fwd);
-    }
+      if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 1 1
+      {
+        dt.stop();
+        return;
+        // continue;
+      }
+
+      if ( line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) // 1 0
+      {
+        i += vel_offset;
+        RightMotor.setVelocity( vel + i, percentUnits::pct );
+      }
+      else if ( !line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 0 1
+      {
+        i += vel_offset;
+        LeftMotor.setVelocity( vel + i, percentUnits::pct );
+      }
+      else if ( !line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) { // 0 0
+        i = 0;
+        LeftMotor.setVelocity( vel, percentUnits::pct );
+        RightMotor.setVelocity( vel, percentUnits::pct );
+      }
+    vex::task::sleep(90);
   }
 }
 
