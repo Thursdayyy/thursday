@@ -9,8 +9,11 @@ vex::brain       Brain;
 
 // define your global instances of motors and other devices here
 // MOTORS
-vex::motor RightMotor = vex::motor( vex::PORT1, true );
-vex::motor LeftMotor = vex::motor( vex::PORT10, false );
+vex::motor RightMotor  = vex::motor( vex::PORT1, true );
+vex::motor LeftMotor   = vex::motor( vex::PORT10, false );
+vex::motor BlockMotor  = vex::motor( vex::PORT4, true );
+vex::motor CamMotor    = vex::motor( vex::PORT5, true);
+
 vex::drivetrain dt( LeftMotor, RightMotor ); 
 
 // SENSORS
