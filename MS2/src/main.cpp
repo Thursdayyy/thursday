@@ -109,6 +109,24 @@ void BackItUp( double distance )
   dt.driveFor( directionType::rev, distance, DUNITS );
 }
 
+void Park(){
+
+  while (true) {
+    dt.drive(fwd);
+
+    if (line_tracker_left.sees_line() && line_tracker_right.sees_line()){
+      break;
+    }
+  }
+
+  dt.driveFor(fwd, 3.5, DUNITS);
+
+  dt.stop();
+
+  return;
+}
+
+
 void Forward( double distance )
 {
   dt.driveFor( directionType::fwd, distance, DUNITS );
@@ -158,4 +176,42 @@ int main() {
 
   RightMotor.spinFor( -233, vex::rotationUnits::deg, false );
   LeftMotor.spinFor( 233, vex::rotationUnits::deg );
+
+  // //Caroline attempts to make it into a loop in the comments belowwwww
+
+  // int bins = 0;
+
+  // while (bins < 5) {
+
+  //   FollowLine();
+  
+  //   BackItUp( 3.5 );
+
+  //   RightMotor.spinFor( 235*2, vex::rotationUnits::deg );
+    
+  //   while( ultra.distance(DUNITS) > 3.4 )
+  //   {
+  //     dt.drive( directionType::fwd );
+  //   }
+  //   dt.stop();
+
+  //   // blocks do their thang
+  //   raise_blocks();
+
+  //   vex::task::sleep(3000);
+
+  //   while ( !line_tracker_left.sees_line() && !line_tracker_right.sees_line() )
+  //   {
+  //     dt.drive( directionType::rev );
+  //   }
+  //   dt.stop();
+
+  //   RightMotor.spinFor( -233, vex::rotationUnits::deg, false );
+  //   LeftMotor.spinFor( 233, vex::rotationUnits::deg );
+
+  //   bins++;
+  // }
+
+  // Park();
+
 }
