@@ -21,28 +21,28 @@ void println( const char* c_str )
   Brain.Screen.newLine();
 }
 // Stamps down and raises the blocks
-void raise_blocks(){
-    vex::task::sleep( 3000 );
+void RaiseBlocks(){
+    vex::task::sleep( 1000 );
     // Open the Door
-    CamMotor.spinTo(90,vex::rotationUnits::deg, true );
     // Stamp downt the blocks
-    BlockMotor.setVelocity(40,velocityUnits::pct);
-    BlockMotor.spin(directionType::fwd);
+    BlockMotor.setVelocity(30,velocityUnits::pct);
+    BlockMotor.spin(directionType::rev);
     wait(1.5,vex::timeUnits::sec);
     BlockMotor.stop();
     // Pick up new blocks
-    BlockMotor.spin(directionType::rev);
+    BlockMotor.spin(directionType::fwd);
     wait(4,vex::timeUnits::sec);
     BlockMotor.stop();
     // Shut the door
-    CamMotor.spinTo(0, vex::rotationUnits::deg,true);
+    //CamMotor.spinTo(90, vex::rotationUnits::deg,true);
     return;
 }
 //FUNCTIONS
 void ButtonDrop()
 {
   const double vel = 20;
-  dt.setVelocity(vel, velocityUnits::pct);
+  //Caroline's VEX made her change this from setVelocity
+  dt.setDriveVelocity(vel, velocityUnits::pct);
   // drop off the button assembly
   while(true)
   {
@@ -82,7 +82,7 @@ void FollowLine()
       {
         dt.stop();
         return;
-        // continue;
+        //continue;
       }
 
       if ( line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) // 1 0
@@ -109,6 +109,22 @@ void BackItUp( double distance )
   dt.driveFor( directionType::rev, distance, DUNITS );
 }
 
+void Park(){
+
+  while (true) {
+    dt.drive(fwd);
+
+    if (line_tracker_left.sees_line() && line_tracker_right.sees_line()){
+      break;
+    }
+  }
+
+  dt.stop();
+
+  return;
+}
+
+
 void Forward( double distance )
 {
   dt.driveFor( directionType::fwd, distance, DUNITS );
@@ -125,37 +141,46 @@ int main() {
 
   println( "TurnyTurny Program has Started." );
 
-  dt.setVelocity(15, velocityUnits::pct);
-  vex::task::sleep(4500);
+//Caroline's VEX made her change this from setVelocity
+  dt.setDriveVelocity(15, velocityUnits::pct);
+  vex::task::sleep(5500);
 
   ButtonDrop();
+  int bins = 0;
+  while ( bins++ < 5 ) {
+    FollowLine();
+    
+    Forward( 7.5 );
 
-  FollowLine();
-  
-  BackItUp( 3.5 );
+    // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
+    //RightMotor.spinFor( 235*2, vex::rotationUnits::deg );
+    dt.turnFor(-61, vex::rotationUnits::deg);
 
-  // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-  RightMotor.spinFor( 235*2, vex::rotationUnits::deg );
+    Forward(20);
 
-  // for now using a distance marker to know how far to back out
-  
-  while( ultra.distance(DUNITS) > 3.4 )
-  {
-    dt.drive( directionType::fwd );
+    // for now using a distance marker to know how far to back out
+    
+    while( ultra.distance(DUNITS) > 3.4 )
+    {
+      dt.drive( directionType::fwd );
+    }
+    dt.stop();
+
+    // blocks do their thang
+    //sRaiseBlocks();
+
+    vex::task::sleep(3000);
+
+    while ( !line_tracker_back.sees_line()) {
+      dt.drive( directionType::rev );
+      vex::task::sleep(50);
+    }
+
+    dt.stop();
+
+    dt.turnFor(65, vex::rotationUnits::deg);
   }
-  dt.stop();
 
-  // blocks do their thang
-  raise_blocks();
+  Park();
 
-  vex::task::sleep(3000);
-
-  while ( !line_tracker_left.sees_line() && !line_tracker_right.sees_line() )
-  {
-    dt.drive( directionType::rev );
-  }
-  dt.stop();
-
-  RightMotor.spinFor( -233, vex::rotationUnits::deg, false );
-  LeftMotor.spinFor( 233, vex::rotationUnits::deg );
 }
