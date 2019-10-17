@@ -119,8 +119,6 @@ void Park(){
     }
   }
 
-  dt.driveFor(fwd, 3.5, DUNITS);
-
   dt.stop();
 
   return;
