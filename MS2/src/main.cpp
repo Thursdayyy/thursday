@@ -23,10 +23,11 @@ void println( const char* c_str ) {
 }
 
 // Stamps down and raises the blocks
+bool DoorOpen = true;
 void RaiseBlocks() {
     vex::task::sleep( 1000 );
-
-    // Open the Door
+    // Shut the door
+    CamMotor.spinTo(90, vex::rotationUnits::deg,true);
     // Stamp down the blocks
     BlockMotor.setVelocity(30, velocityUnits::pct);
     BlockMotor.spin(directionType::rev);
@@ -37,13 +38,10 @@ void RaiseBlocks() {
     
     // Pick up new blocks
     BlockMotor.spin(directionType::fwd);
-    
     wait(4, vex::timeUnits::sec);
     
     BlockMotor.stop();
-    
-    // Shut the door
-    //CamMotor.spinTo(90, vex::rotationUnits::deg,true);
+    DoorOpen = false;
     return;
 }
 
@@ -96,6 +94,7 @@ void FollowLine() {
       if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 1 1
       {
         dt.stop();
+
         return;
         //continue;
       }
@@ -143,13 +142,12 @@ void Forward( double distance ) {
   dt.driveFor( directionType::fwd, distance, DUNITS );
 }
 
+
 bool OverCross() {
   return !line_tracker_left.sees_line() && !line_tracker_right.sees_line();
 }
 
 int main() {
-  // Brain.Screen.print("TurnyTurny Program has Started.");
-  // Brain.Screen.newLine();
 
   println( "TurnyTurny Program has Started." );
 
@@ -159,17 +157,26 @@ int main() {
   dt.setDriveVelocity(15, velocityUnits::pct);
 
   ButtonDrop();
+
   int bins = 0;
-  while ( bins++ < 5 ) {
+  while ( bins++ < 1 ) {
+  
+    dt.setTurnVelocity(15, percentUnits::pct);
     FollowLine();
     
     Forward( 7.5 );
 
+    //Make sure door is open
+    if (DoorOpen == false){
+      DoorOpen = true;
+      CamMotor.spinTo(0, vex::rotationUnits::deg,true);
+    }
+
     // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
     //RightMotor.spinFor( 235*2, vex::rotationUnits::deg );
-    dt.turnFor(-61, vex::rotationUnits::deg);
+    dt.turnFor(-59, vex::rotationUnits::deg);
 
-    Forward(20);
+    Forward(16);
 
     // for now using a distance marker to know how far to back out
     
@@ -180,7 +187,7 @@ int main() {
     dt.stop();
 
     // blocks do their thang
-    //sRaiseBlocks();
+    RaiseBlocks();
 
     vex::task::sleep(3000);
 
@@ -191,7 +198,14 @@ int main() {
 
     dt.stop();
 
-    dt.turnFor(65, vex::rotationUnits::deg);
+    dt.setTurnVelocity(5, percentUnits::pct);
+    while (!line_tracker_left.sees_line()) {
+
+      dt.turn(turnType::right);
+      vex::task::sleep(50);
+    }
+
+    //dt.turnFor(65, vex::rotationUnits::deg);
   }
 
   Park();
