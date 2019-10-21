@@ -85,7 +85,7 @@ void ButtonDrop() {
 void FollowLine() {
   const int vel = 20;
   double i = 0;
-  const double vel_offset = .1;
+  const double vel_offset = .3;
 
   dt.setDriveVelocity(vel, pct);
   dt.drive(fwd);
