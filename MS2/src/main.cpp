@@ -162,6 +162,7 @@ int main() {
   while ( bins++ < 5 ) {
   
     dt.setTurnVelocity(15, percentUnits::pct);
+    
     FollowLine();
     
     Forward( 7.5 );
@@ -193,6 +194,9 @@ int main() {
     return 0;
 
     dt.setTurnVelocity(5, percentUnits::pct);
+    
+    //while (!line_tracker_center.sees_line()) {
+
     while (!line_tracker_left.sees_line()) {
 
       dt.turn(turnType::right);
