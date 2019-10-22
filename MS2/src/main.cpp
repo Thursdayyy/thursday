@@ -23,13 +23,13 @@ void println( const char* c_str ) {
 }
 
 // Stamps down and raises the blocks
-bool DoorOpen = true;
+bool DoorOpen = false;
 void RaiseBlocks() {
     vex::task::sleep( 1000 );
     // Shut the door
-    CamMotor.spinTo(90, vex::rotationUnits::deg,true);
+    CamMotor.spinTo(0, vex::rotationUnits::deg,true);
     // Stamp down the blocks
-    BlockMotor.setVelocity(30, velocityUnits::pct);
+    BlockMotor.setVelocity(100, velocityUnits::pct);
     BlockMotor.spin(directionType::rev);
 
     wait(1.5, vex::timeUnits::sec);
@@ -38,7 +38,7 @@ void RaiseBlocks() {
     
     // Pick up new blocks
     BlockMotor.spin(directionType::fwd);
-    wait(4, vex::timeUnits::sec);
+    wait(2, vex::timeUnits::sec);
     
     BlockMotor.stop();
     DoorOpen = false;
@@ -115,7 +115,7 @@ void FollowLine() {
         RightMotor.setVelocity( vel, percentUnits::pct );
       }
 
-    vex::task::sleep(90);
+    vex::task::sleep(70);
   }
 }
 
@@ -159,7 +159,7 @@ int main() {
   ButtonDrop();
 
   int bins = 0;
-  while ( bins++ < 1 ) {
+  while ( bins++ < 5 ) {
   
     dt.setTurnVelocity(15, percentUnits::pct);
     FollowLine();
@@ -169,22 +169,14 @@ int main() {
     //Make sure door is open
     if (DoorOpen == false){
       DoorOpen = true;
-      CamMotor.spinTo(0, vex::rotationUnits::deg,true);
+      CamMotor.spinTo(-90, vex::rotationUnits::deg,true);
     }
 
     // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
     //RightMotor.spinFor( 235*2, vex::rotationUnits::deg );
-    dt.turnFor(-59, vex::rotationUnits::deg);
+    dt.turnFor(-53, vex::rotationUnits::deg);
 
     Forward(16);
-
-    // for now using a distance marker to know how far to back out
-    
-    while( ultra.distance(DUNITS) > 3.4 )
-    {
-      dt.drive( directionType::fwd );
-    }
-    dt.stop();
 
     // blocks do their thang
     RaiseBlocks();
@@ -197,6 +189,8 @@ int main() {
     }
 
     dt.stop();
+
+    return 0;
 
     dt.setTurnVelocity(5, percentUnits::pct);
     while (!line_tracker_left.sees_line()) {
