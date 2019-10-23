@@ -24,4 +24,5 @@ vex::sonar ultra(Brain.ThreeWirePort.A);
 vex::bumper bumpy( Brain.ThreeWirePort.F );
 
 // UNITS
-auto DUNITS = distanceUnits::in;
+constexpr auto DUNITS = distanceUnits::in;
+constexpr auto PUNITS = percentUnits::pct;

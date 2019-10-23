@@ -17,14 +17,18 @@ using namespace vex;
 //FUNCTIONS
 
 // Prints a formatted std::string to the VEX Brain screen
-void println( const char* c_str ) {
+//=================================================================================================================
+void println( const char* c_str )
+{
   Brain.Screen.print( c_str );
   Brain.Screen.newLine();
 }
 
 // Stamps down and raises the blocks
+//==================================================================================================================
 bool DoorOpen = false;
-void RaiseBlocks() {
+void RaiseBlocks()
+{
     vex::task::sleep( 1000 );
     // Shut the door
     CamMotor.spinTo(0, vex::rotationUnits::deg,true);
@@ -45,8 +49,9 @@ void RaiseBlocks() {
     return;
 }
 
-void RevThoseEngines(){
-
+//==================================================================================================================
+void RevThoseEngines()
+{
   while (!bumpy.pressing())
     ;
 
@@ -54,7 +59,9 @@ void RevThoseEngines(){
   return;
 }
 
-void ButtonDrop() {
+//==================================================================================================================
+void ButtonDrop()
+{
   const double vel = 20;
   //Caroline's VEX made her change this from setVelocity
   dt.setDriveVelocity(vel, velocityUnits::pct);
@@ -80,8 +87,9 @@ void ButtonDrop() {
   }
 }
 
-//TODO
-void FollowLine() {
+//==================================================================================================================
+void FollowLine()
+{
   const int vel = 20;
   double i = 0;
   const double vel_offset = .3;
@@ -103,28 +111,32 @@ void FollowLine() {
       if ( line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) // 1 0
       {
         i += vel_offset;
-        RightMotor.setVelocity( vel + i, percentUnits::pct );
+        RightMotor.setVelocity( vel + i, PUNITS );
       }
       else if ( !line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 0 1
       {
         i += vel_offset;
-        LeftMotor.setVelocity( vel + i, percentUnits::pct );
+        LeftMotor.setVelocity( vel + i, PUNITS );
       }
       else if ( !line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) { // 0 0
         i = 0;
-        LeftMotor.setVelocity( vel, percentUnits::pct );
-        RightMotor.setVelocity( vel, percentUnits::pct );
+        LeftMotor.setVelocity( vel, PUNITS );
+        RightMotor.setVelocity( vel, PUNITS );
       }
 
     vex::task::sleep(70);
   }
 }
 
-void BackItUp( double distance ) {
+//==================================================================================================================
+void BackItUp( double distance )
+{
   dt.driveFor( directionType::rev, distance, DUNITS );
 }
 
-void Park() {
+//==================================================================================================================
+void Park()
+{
   while (true) {
     dt.drive(fwd);
 
@@ -138,19 +150,23 @@ void Park() {
   return;
 }
 
-
-void Forward( double distance ) {
+//==================================================================================================================
+void Forward( double distance )
+{
   dt.driveFor( directionType::fwd, distance, DUNITS );
 }
 
-
-bool OverCross() {
+//==================================================================================================================
+bool OverCross()
+{
   return !line_tracker_left.sees_line() && !line_tracker_right.sees_line();
 }
 
-void ApproachWall(){
+//==================================================================================================================
+void ApproachWall()
+{
 
-    dt.setDriveVelocity(10, percentUnits::pct);
+    dt.setDriveVelocity(10, PUNITS);
     dt.drive(fwd);
 
     while (ultra.distance(DUNITS) > 1.8) {
@@ -159,16 +175,15 @@ void ApproachWall(){
 
     dt.stop();
 
-    dt.setDriveVelocity(15, percentUnits::pct);
+    dt.setDriveVelocity(15, PUNITS);
 }
 
-int main() {
-
-  println( "TurnyTurny Program has Started." );
+//==================================================================================================================
+int main()
+{
 
   RevThoseEngines();
 
-//Caroline's VEX made her change this from setVelocity
   dt.setDriveVelocity(15, velocityUnits::pct);
 
   ButtonDrop();
@@ -176,7 +191,7 @@ int main() {
   int bins = 0;
   while ( bins++ < 5 ) {
   
-    dt.setTurnVelocity(15, percentUnits::pct);
+    dt.setTurnVelocity(15, PUNITS);
     
     FollowLine();
     
@@ -193,7 +208,6 @@ int main() {
 
     ApproachWall();
 
-    // blocks do their thang
     RaiseBlocks();
 
     while ( !line_tracker_back.sees_line()) {
@@ -203,19 +217,13 @@ int main() {
 
     dt.stop();
 
-    dt.setTurnVelocity(5, percentUnits::pct);
-    
-    //while (!line_tracker_center.sees_line()) {
+    dt.setTurnVelocity(5, PUNITS);
 
     while (!line_tracker_left.sees_line()) {
-
       dt.turn(turnType::right);
       vex::task::sleep(50);
     }
-
-    //dt.turnFor(65, vex::rotationUnits::deg);
   }
 
   Park();
-
 }
