@@ -24,4 +24,12 @@ vex::sonar ultra(Brain.ThreeWirePort.A);
 vex::bumper bumpy( Brain.ThreeWirePort.F );
 
 // UNITS
-auto DUNITS = distanceUnits::in;
+constexpr auto DUNITS = distanceUnits::in;
+constexpr auto PUNITS = percentUnits::pct;
+
+// CONSTANTS
+constexpr double VROOM_SPEED = 15;
+constexpr double YAW_SPEED = 15;
+
+// STATE VARIABLES
+bool DoorOpen = false;
