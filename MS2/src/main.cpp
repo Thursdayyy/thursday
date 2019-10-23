@@ -174,7 +174,7 @@ void ApproachWall()
 
     dt.stop();
 
-    dt.setDriveVelocity(15, PUNITS);
+    dt.setDriveVelocity( VROOM_SPEED, PUNITS );
 }
 
 //==================================================================================================================
@@ -193,7 +193,7 @@ void ReturnToLine()
     dt.turn(turnType::right);
     vex::task::sleep(50);
   }
-  dt.setTurnVelocity(15, PUNITS);
+  dt.setTurnVelocity( YAW_SPEED, PUNITS );
 }
 
 //==================================================================================================================
@@ -202,8 +202,8 @@ int main()
 
   RevThoseEngines();
 
-  dt.setDriveVelocity(15, velocityUnits::pct);
-  dt.setTurnVelocity(15, PUNITS);
+  dt.setDriveVelocity( VROOM_SPEED, velocityUnits::pct);
+  dt.setTurnVelocity( YAW_SPEED, PUNITS);
 
   ButtonDrop();
 

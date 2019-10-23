@@ -27,5 +27,9 @@ vex::bumper bumpy( Brain.ThreeWirePort.F );
 constexpr auto DUNITS = distanceUnits::in;
 constexpr auto PUNITS = percentUnits::pct;
 
+// CONSTANTS
+constexpr double VROOM_SPEED = 15;
+constexpr double YAW_SPEED = 15;
+
 // STATE VARIABLES
 bool DoorOpen = false;
