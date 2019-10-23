@@ -156,15 +156,23 @@ void Forward( double distance )
 }
 
 //==================================================================================================================
-bool OverCross()
+void TurnIntoBin()
 {
-  return !line_tracker_left.sees_line() && !line_tracker_right.sees_line();
+    Forward( 7.5 );
+
+    //Make sure door is open
+    if (DoorOpen == false){
+      DoorOpen = true;
+      CamMotor.spinTo(-90, vex::rotationUnits::deg,true);
+    }
+
+    // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
+    dt.turnFor(-53, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
 }
 
 //==================================================================================================================
 void ApproachWall()
 {
-
     dt.setDriveVelocity(10, PUNITS);
     dt.drive(fwd);
 
@@ -199,7 +207,6 @@ void ReturnToLine()
 //==================================================================================================================
 int main()
 {
-
   RevThoseEngines();
 
   dt.setDriveVelocity( VROOM_SPEED, velocityUnits::pct);
@@ -209,20 +216,9 @@ int main()
 
   int bins = 0;
   while ( bins++ < 5 ) {
-  
-    
     SearchForCrossMark();
-    
-    Forward( 7.5 );
 
-    //Make sure door is open
-    if (DoorOpen == false){
-      DoorOpen = true;
-      CamMotor.spinTo(-90, vex::rotationUnits::deg,true);
-    }
-
-    // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-    dt.turnFor(-53, vex::rotationUnits::deg);
+    TurnIntoBin();
 
     ApproachWall();
 
