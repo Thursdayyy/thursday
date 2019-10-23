@@ -87,7 +87,7 @@ void ButtonDrop()
 }
 
 //==================================================================================================================
-void FollowLine()
+void SearchForCrossMark()
 {
   const int vel = 20;
   double i = 0;
@@ -211,7 +211,7 @@ int main()
   while ( bins++ < 5 ) {
   
     
-    FollowLine();
+    SearchForCrossMark();
     
     Forward( 7.5 );
 
