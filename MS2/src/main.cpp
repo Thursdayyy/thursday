@@ -46,6 +46,7 @@ void RaiseBlocks() {
 }
 
 void RevThoseEngines(){
+
   while (!bumpy.pressing())
     ;
 
@@ -147,6 +148,20 @@ bool OverCross() {
   return !line_tracker_left.sees_line() && !line_tracker_right.sees_line();
 }
 
+void ApproachWall(){
+
+    dt.setDriveVelocity(10, percentUnits::pct);
+    dt.drive(fwd);
+
+    while (ultra.distance(DUNITS) > 1.8) {
+      vex::task::sleep(50);
+    }
+
+    dt.stop();
+
+    dt.setDriveVelocity(15, percentUnits::pct);
+}
+
 int main() {
 
   println( "TurnyTurny Program has Started." );
@@ -174,15 +189,12 @@ int main() {
     }
 
     // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-    //RightMotor.spinFor( 235*2, vex::rotationUnits::deg );
     dt.turnFor(-53, vex::rotationUnits::deg);
 
-    Forward(16);
+    ApproachWall();
 
     // blocks do their thang
     RaiseBlocks();
-
-    vex::task::sleep(3000);
 
     while ( !line_tracker_back.sees_line()) {
       dt.drive( directionType::rev );
@@ -190,8 +202,6 @@ int main() {
     }
 
     dt.stop();
-
-    return 0;
 
     dt.setTurnVelocity(5, percentUnits::pct);
     
