@@ -26,7 +26,6 @@ void println( const char* c_str )
 
 // Stamps down and raises the blocks
 //==================================================================================================================
-bool DoorOpen = false;
 void RaiseBlocks()
 {
     vex::task::sleep( 1000 );
@@ -179,19 +178,38 @@ void ApproachWall()
 }
 
 //==================================================================================================================
+void ReturnToLine()
+{
+  while ( !line_tracker_back.sees_line()) {
+    dt.drive( directionType::rev );
+    vex::task::sleep(50);
+  }
+
+  dt.stop();
+
+  dt.setTurnVelocity(5, PUNITS);
+
+  while (!line_tracker_left.sees_line()) {
+    dt.turn(turnType::right);
+    vex::task::sleep(50);
+  }
+  dt.setTurnVelocity(15, PUNITS);
+}
+
+//==================================================================================================================
 int main()
 {
 
   RevThoseEngines();
 
   dt.setDriveVelocity(15, velocityUnits::pct);
+  dt.setTurnVelocity(15, PUNITS);
 
   ButtonDrop();
 
   int bins = 0;
   while ( bins++ < 5 ) {
   
-    dt.setTurnVelocity(15, PUNITS);
     
     FollowLine();
     
@@ -210,19 +228,7 @@ int main()
 
     RaiseBlocks();
 
-    while ( !line_tracker_back.sees_line()) {
-      dt.drive( directionType::rev );
-      vex::task::sleep(50);
-    }
-
-    dt.stop();
-
-    dt.setTurnVelocity(5, PUNITS);
-
-    while (!line_tracker_left.sees_line()) {
-      dt.turn(turnType::right);
-      vex::task::sleep(50);
-    }
+    ReturnToLine();
   }
 
   Park();
