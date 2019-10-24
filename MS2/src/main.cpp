@@ -54,6 +54,8 @@ void RevThoseEngines()
   while (!bumpy.pressing())
     ;
 
+  ticky.clear();
+
   task::sleep(2000);
   return;
 }
@@ -133,41 +135,59 @@ void BackItUp( double distance )
   dt.driveFor( directionType::rev, distance, DUNITS );
 }
 
-//==================================================================================================================
-void Park()
-{
-  while (true) {
-    dt.drive(fwd);
-
-    if (line_tracker_left.sees_line() && line_tracker_right.sees_line()){
-      break;
-    }
-  }
-
-  dt.stop();
-
-  return;
-}
-
-//==================================================================================================================
+//==================================================================================================================j
 void Forward( double distance )
 {
   dt.driveFor( directionType::fwd, distance, DUNITS );
 }
 
 //==================================================================================================================
+void Park()
+{
+
+  int seen = 0;
+  while (seen < 1) {
+    SearchForCrossMark();
+    Forward(1);
+    seen++;
+  }
+
+  while (true) {
+    dt.drive(fwd);
+
+    if (line_tracker_left.sees_line() && line_tracker_right.sees_line()){
+       break;
+     }
+
+  }
+
+  dt.stop();
+  Forward(2);
+
+  return;
+}
+
+//==================================================================================================================
 void TurnIntoBin()
 {
-    Forward( 7.5 );
+    // Forward( 7.5 );
+    while ( !line_tracker_back.sees_line() )
+    {
+      dt.drive(fwd);
+      vex::task::sleep(40);
+    }
+
+    Forward(2);
+    dt.stop();
 
     //Make sure door is open
     if (DoorOpen == false){
       DoorOpen = true;
-      CamMotor.spinTo(-90, vex::rotationUnits::deg,true);
+      CamMotor.spinTo(90, vex::rotationUnits::deg,true);
     }
 
     // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-    dt.turnFor(-53, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+    dt.turnFor(-60, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
 }
 
 //==================================================================================================================
@@ -176,9 +196,10 @@ void ApproachWall()
     dt.setDriveVelocity(10, PUNITS);
     dt.drive(fwd);
 
-    while (ultra.distance(DUNITS) > 1.8) {
-      vex::task::sleep(50);
-    }
+    Forward(16);
+    // while (ultra.distance(DUNITS) > 1.8) {
+    //   vex::task::sleep(50);
+    // }
 
     dt.stop();
 
@@ -195,13 +216,32 @@ void ReturnToLine()
 
   dt.stop();
 
+  Forward(1);
+
   dt.setTurnVelocity(5, PUNITS);
 
   while (!line_tracker_left.sees_line()) {
     dt.turn(turnType::right);
     vex::task::sleep(50);
   }
+
+  dt.turnFor(-4, rotationUnits::deg);
+
   dt.setTurnVelocity( YAW_SPEED, PUNITS );
+}
+
+void ChaChaRealSmooth() {
+
+  dt.setTurnVelocity(10, PUNITS);
+  dt.turnFor(115, rotationUnits::deg);
+
+  dt.setDriveVelocity(5, PUNITS);
+  while (!bumpy.pressing()){
+    dt.drive(directionType::rev);
+  }
+  dt.stop();
+
+  return;
 }
 
 //==================================================================================================================
@@ -212,10 +252,10 @@ int main()
   dt.setDriveVelocity( VROOM_SPEED, velocityUnits::pct);
   dt.setTurnVelocity( YAW_SPEED, PUNITS);
 
-  ButtonDrop();
+  //ButtonDrop();
 
   int bins = 0;
-  while ( bins++ < 5 ) {
+  while ( bins++ < 3 && ticky.time(timeUnits::sec) < 160 ) {
     SearchForCrossMark();
 
     TurnIntoBin();
@@ -228,4 +268,6 @@ int main()
   }
 
   Park();
+
+  ChaChaRealSmooth();
 }
