@@ -67,6 +67,15 @@ void RevThoseEngines()
 }
 
 //==================================================================================================================
+void KeepScooting(){
+  // move past the starting square
+  while ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
+  {
+    dt.drive(fwd);
+  }
+}
+
+//==================================================================================================================
 void ButtonDrop()
 {
   const double vel = 20;
@@ -87,17 +96,13 @@ void ButtonDrop()
     }
   }
 
-  // move past the starting square
-  while ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
-  {
-    dt.drive(fwd);
-  }
+  KeepScooting();
 }
 
 //==================================================================================================================
 void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or stop at a cross mark
 {
-  const int vel = 20;//VROOM_SPEED;
+  const int vel = 20;
   double i = 0;
   const double vel_offset = .3;
 
@@ -109,6 +114,7 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
   {
       if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 1 1
       {
+        //TODO: Move stop outside of this function
         dt.stop();
 
         return;
@@ -140,25 +146,10 @@ void BackItUp( double distance )
   dt.driveFor( directionType::rev, distance, DUNITS );
 }
 
-//==================================================================================================================j
+//==================================================================================================================
 void Forward( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
 {
-  // const int vel_pct_offset = 1;
-  
-  // dt.setDriveVelocity(vel_pct_offset, PUNITS);
   dt.driveFor( directionType::fwd, distance, DUNITS );
-  // task::sleep(1000);
-  
-  // dt.setDriveVelocity(vel_pct_offset + 5, PUNITS);
-  // task::sleep(1000);
-  
-  // dt.setDriveVelocity(vel_pct_offset + 10, PUNITS);
-  // int cur_vel_pct = 1;
-  // while( cur_vel_pct < VROOM_SPEED )
-  // {
-  //   cur_vel_pct += vel_pct_offset;
-  //   dt.setDriveVelocity( cur_vel_pct, PUNITS );
-  // }
 }
 
 //==================================================================================================================
@@ -205,7 +196,7 @@ void TurnIntoBin()
     }
 
     // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-    dt.turnFor(-60, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+    dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
 }
 
 //==================================================================================================================
@@ -231,7 +222,7 @@ void ReturnToLine()
 
   dt.stop();
 
-  Forward(1);
+  Forward(0.5);
 
   dt.setTurnVelocity(5, PUNITS);
 
@@ -245,46 +236,63 @@ void ReturnToLine()
   dt.setTurnVelocity( YAW_SPEED, PUNITS );
 }
 
+//=================================================================================================================
 void ChaChaRealSmooth() {
 
   dt.setTurnVelocity(YAW_SPEED, PUNITS);
-  while( !line_tracker_right.sees_line() )
-    dt.turn(turnType::right);
-  // dt.turnFor(115, rotationUnits::deg); // TODO: use line sensor to determine if turn is complete instead of absolute
 
+  dt.turnFor(100, rotationUnits::deg); // TODO: use line sensor to determine if turn is complete instead of absolute
+
+  while( !line_tracker_left.sees_line() )
+     dt.turn(turnType::right);
+
+  dt.turnFor(-4, rotationUnits::deg);
+}
+
+//==================================================================================================================
+void HitTheBooty(){
   dt.setDriveVelocity(VROOM_SPEED/2, PUNITS);
   while (!bumpy.pressing()){
     dt.drive(directionType::rev);
   }
+
   dt.stop();
 }
 
 //==================================================================================================================
 int main()
 {
+  Setup();
   RevThoseEngines();
 
-  // Forward(10);
-  // return 0;
+  // ButtonDrop();
 
-  Setup();
+  int laps = 0;
 
-  ButtonDrop();
+  while (laps++ < 2) {
 
-  int bins = 0;
-  while ( bins++ < 5 && ticky.time(timeUnits::sec) < 160 ) {
-    SearchForCrossMark();
 
-    TurnIntoBin();
+    int bins = 0;
 
-    ApproachWall();
+    while ( bins++ < 5 ){//&& ticky.time(timeUnits::sec) < 160 ) {
+      SearchForCrossMark();
+      TurnIntoBin();
 
-    RaiseBlocks();
+      ApproachWall();
 
-    ReturnToLine();
+      RaiseBlocks();
+
+      ReturnToLine();
+    }
+
+    Park(0);
+
+    ChaChaRealSmooth();
   }
 
-  Park(0); // only visiting 4 bins, skipping the 5th one
+  Park(5);
 
   ChaChaRealSmooth();
+
+  HitTheBooty();
 }
