@@ -28,8 +28,8 @@ constexpr auto DUNITS = distanceUnits::in;
 constexpr auto PUNITS = percentUnits::pct;
 
 // CONSTANTS
-constexpr double VROOM_SPEED = 15;
-constexpr double YAW_SPEED = 15;
+constexpr double VROOM_SPEED = 10;
+constexpr double YAW_SPEED = 8;
 
 // STATE VARIABLES
 bool DoorOpen = false;

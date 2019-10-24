@@ -3,7 +3,7 @@
 
 using namespace vex;
 
-constexpr int LINE_ANALOG_PCT = 50;
+constexpr int LINE_ANALOG_PCT = 60;
 
 class LineTracker
 {
