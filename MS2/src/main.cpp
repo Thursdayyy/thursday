@@ -47,8 +47,9 @@ void RaiseBlocks()
     BlockMotor.stop();
     
     // Pick up new blocks
+    BlockMotor.setVelocity(50, velocityUnits::pct);
     BlockMotor.spin(directionType::fwd);
-    wait(1, vex::timeUnits::sec);
+    wait(1.2, vex::timeUnits::sec);
     
     BlockMotor.stop();
     DoorOpen = false;
@@ -96,7 +97,7 @@ void ButtonDrop()
 //==================================================================================================================
 void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or stop at a cross mark
 {
-  const int vel = 20;
+  const int vel = 20;//VROOM_SPEED;
   double i = 0;
   const double vel_offset = .3;
 
@@ -143,10 +144,16 @@ void BackItUp( double distance )
 void Forward( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
 {
   // const int vel_pct_offset = 1;
-  // dt.setDriveVelocity(0, PUNITS);
+  
+  // dt.setDriveVelocity(vel_pct_offset, PUNITS);
   dt.driveFor( directionType::fwd, distance, DUNITS );
-
-  // int cur_vel_pct = 0;
+  // task::sleep(1000);
+  
+  // dt.setDriveVelocity(vel_pct_offset + 5, PUNITS);
+  // task::sleep(1000);
+  
+  // dt.setDriveVelocity(vel_pct_offset + 10, PUNITS);
+  // int cur_vel_pct = 1;
   // while( cur_vel_pct < VROOM_SPEED )
   // {
   //   cur_vel_pct += vel_pct_offset;
@@ -161,7 +168,7 @@ void Park( const int cross_marks )
   int seen = 0;
   while (seen < cross_marks) {
     SearchForCrossMark();
-    Forward(1);
+    Forward(2.5);
     seen++;
   }
 
@@ -175,7 +182,7 @@ void Park( const int cross_marks )
   }
 
   dt.stop();
-  Forward(2);
+  Forward(7);
 }
 
 //==================================================================================================================
@@ -188,7 +195,7 @@ void TurnIntoBin()
       vex::task::sleep(40);
     }
 
-    Forward(2);
+    Forward(2.2);
     dt.stop();
 
     //Make sure door is open
@@ -260,7 +267,7 @@ int main()
 
   Setup();
 
-  ButtonDrop();
+  //ButtonDrop();
 
   int bins = 0;
   while ( bins++ < 4 && ticky.time(timeUnits::sec) < 160 ) {
