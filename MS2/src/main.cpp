@@ -24,6 +24,13 @@ void println( const char* c_str )
   Brain.Screen.newLine();
 }
 
+//==================================================================================================================
+void Setup()
+{
+  dt.setDriveVelocity( VROOM_SPEED, velocityUnits::pct);
+  dt.setTurnVelocity( YAW_SPEED, PUNITS);
+}
+
 // Stamps down and raises the blocks
 //==================================================================================================================
 void RaiseBlocks()
@@ -40,12 +47,12 @@ void RaiseBlocks()
     BlockMotor.stop();
     
     // Pick up new blocks
+    BlockMotor.setVelocity(50, velocityUnits::pct);
     BlockMotor.spin(directionType::fwd);
-    wait(2, vex::timeUnits::sec);
+    wait(1.2, vex::timeUnits::sec);
     
     BlockMotor.stop();
     DoorOpen = false;
-    return;
 }
 
 //==================================================================================================================
@@ -57,7 +64,6 @@ void RevThoseEngines()
   ticky.clear();
 
   task::sleep(2000);
-  return;
 }
 
 //==================================================================================================================
@@ -89,9 +95,9 @@ void ButtonDrop()
 }
 
 //==================================================================================================================
-void SearchForCrossMark()
+void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or stop at a cross mark
 {
-  const int vel = 20;
+  const int vel = 20;//VROOM_SPEED;
   double i = 0;
   const double vel_offset = .3;
 
@@ -106,7 +112,6 @@ void SearchForCrossMark()
         dt.stop();
 
         return;
-        //continue;
       }
 
       if ( line_tracker_left.sees_line() && !line_tracker_right.sees_line() ) // 1 0
@@ -136,23 +141,38 @@ void BackItUp( double distance )
 }
 
 //==================================================================================================================j
-void Forward( double distance )
+void Forward( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
 {
+  // const int vel_pct_offset = 1;
+  
+  // dt.setDriveVelocity(vel_pct_offset, PUNITS);
   dt.driveFor( directionType::fwd, distance, DUNITS );
+  // task::sleep(1000);
+  
+  // dt.setDriveVelocity(vel_pct_offset + 5, PUNITS);
+  // task::sleep(1000);
+  
+  // dt.setDriveVelocity(vel_pct_offset + 10, PUNITS);
+  // int cur_vel_pct = 1;
+  // while( cur_vel_pct < VROOM_SPEED )
+  // {
+  //   cur_vel_pct += vel_pct_offset;
+  //   dt.setDriveVelocity( cur_vel_pct, PUNITS );
+  // }
 }
 
 //==================================================================================================================
-void Park()
+void Park( const int cross_marks )
 {
 
   int seen = 0;
-  while (seen < 1) {
+  while (seen < cross_marks) {
     SearchForCrossMark();
-    Forward(1);
+    Forward(2.5);
     seen++;
   }
 
-  while (true) {
+  while (true) { // TODO: replace this code with SearchForCrossMark()
     dt.drive(fwd);
 
     if (line_tracker_left.sees_line() && line_tracker_right.sees_line()){
@@ -162,9 +182,7 @@ void Park()
   }
 
   dt.stop();
-  Forward(2);
-
-  return;
+  Forward(7);
 }
 
 //==================================================================================================================
@@ -177,7 +195,7 @@ void TurnIntoBin()
       vex::task::sleep(40);
     }
 
-    Forward(2);
+    Forward(2.2);
     dt.stop();
 
     //Make sure door is open
@@ -197,9 +215,6 @@ void ApproachWall()
     dt.drive(fwd);
 
     Forward(16);
-    // while (ultra.distance(DUNITS) > 1.8) {
-    //   vex::task::sleep(50);
-    // }
 
     dt.stop();
 
@@ -211,7 +226,7 @@ void ReturnToLine()
 {
   while ( !line_tracker_back.sees_line()) {
     dt.drive( directionType::rev );
-    vex::task::sleep(50);
+    vex::task::sleep(100);
   }
 
   dt.stop();
@@ -232,16 +247,16 @@ void ReturnToLine()
 
 void ChaChaRealSmooth() {
 
-  dt.setTurnVelocity(10, PUNITS);
-  dt.turnFor(115, rotationUnits::deg);
+  dt.setTurnVelocity(YAW_SPEED, PUNITS);
+  while( !line_tracker_right.sees_line() )
+    dt.turn(turnType::right);
+  // dt.turnFor(115, rotationUnits::deg); // TODO: use line sensor to determine if turn is complete instead of absolute
 
-  dt.setDriveVelocity(5, PUNITS);
+  dt.setDriveVelocity(VROOM_SPEED/2, PUNITS);
   while (!bumpy.pressing()){
     dt.drive(directionType::rev);
   }
   dt.stop();
-
-  return;
 }
 
 //==================================================================================================================
@@ -249,13 +264,15 @@ int main()
 {
   RevThoseEngines();
 
-  dt.setDriveVelocity( VROOM_SPEED, velocityUnits::pct);
-  dt.setTurnVelocity( YAW_SPEED, PUNITS);
+  // Forward(10);
+  // return 0;
 
-  //ButtonDrop();
+  Setup();
+
+  ButtonDrop();
 
   int bins = 0;
-  while ( bins++ < 3 && ticky.time(timeUnits::sec) < 160 ) {
+  while ( bins++ < 5 && ticky.time(timeUnits::sec) < 160 ) {
     SearchForCrossMark();
 
     TurnIntoBin();
@@ -267,7 +284,7 @@ int main()
     ReturnToLine();
   }
 
-  Park();
+  Park(0); // only visiting 4 bins, skipping the 5th one
 
   ChaChaRealSmooth();
 }
