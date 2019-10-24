@@ -19,7 +19,7 @@ vex::drivetrain dt( LeftMotor, RightMotor );
 LineTracker line_tracker_left( line(Brain.ThreeWirePort.H) );
 LineTracker line_tracker_right( line(Brain.ThreeWirePort.G) );
 LineTracker line_tracker_back( line( Brain.ThreeWirePort.E) );
-LineTracker line_tracker_center( line( Brain.ThreeWirePort.C) );
+LineTracker line_tracker_center( line( Brain.ThreeWirePort.D) );
 vex::sonar ultra(Brain.ThreeWirePort.A);
 vex::bumper bumpy( Brain.ThreeWirePort.F );
 
@@ -33,3 +33,6 @@ constexpr double YAW_SPEED = 15;
 
 // STATE VARIABLES
 bool DoorOpen = false;
+
+// TIMER
+timer ticky = vex::timer();
