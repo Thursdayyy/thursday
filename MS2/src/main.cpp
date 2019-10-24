@@ -247,8 +247,10 @@ void ReturnToLine()
 
 void ChaChaRealSmooth() {
 
-  dt.setTurnVelocity(10, PUNITS);
-  dt.turnFor(115, rotationUnits::deg); // TODO: use line sensor to determine if turn is complete instead of absolute
+  dt.setTurnVelocity(YAW_SPEED, PUNITS);
+  while( !line_tracker_right.sees_line() )
+    dt.turn(turnType::right);
+  // dt.turnFor(115, rotationUnits::deg); // TODO: use line sensor to determine if turn is complete instead of absolute
 
   dt.setDriveVelocity(VROOM_SPEED/2, PUNITS);
   while (!bumpy.pressing()){
@@ -267,10 +269,10 @@ int main()
 
   Setup();
 
-  //ButtonDrop();
+  ButtonDrop();
 
   int bins = 0;
-  while ( bins++ < 4 && ticky.time(timeUnits::sec) < 160 ) {
+  while ( bins++ < 5 && ticky.time(timeUnits::sec) < 160 ) {
     SearchForCrossMark();
 
     TurnIntoBin();
@@ -282,7 +284,7 @@ int main()
     ReturnToLine();
   }
 
-  Park(1); // only visiting 4 bins, skipping the 5th one
+  Park(0); // only visiting 4 bins, skipping the 5th one
 
   ChaChaRealSmooth();
 }
