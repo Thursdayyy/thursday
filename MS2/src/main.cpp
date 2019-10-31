@@ -35,7 +35,7 @@ void Setup()
 //==================================================================================================================
 void RaiseBlocks()
 {
-    vex::task::sleep( 1000 );
+    // vex::task::sleep( 1000 );
     // Shut the door
     CamMotor.spinTo(0, vex::rotationUnits::deg,true);
     // Stamp down the blocks
@@ -56,6 +56,16 @@ void RaiseBlocks()
 }
 
 //==================================================================================================================
+void OpenDoor()
+{
+    //Make sure door is open
+    if (DoorOpen == false){
+      DoorOpen = true;
+      CamMotor.spinTo(90, vex::rotationUnits::deg,true);
+    }
+}
+
+//==================================================================================================================
 void RevThoseEngines()
 {
   while (!bumpy.pressing())
@@ -63,7 +73,7 @@ void RevThoseEngines()
 
   ticky.clear();
 
-  task::sleep(2000);
+  task::sleep(500);
 }
 
 //==================================================================================================================
@@ -104,7 +114,7 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
 {
   const int vel = 20;
   double i = 0;
-  const double vel_offset = .3;
+  const double vel_offset = .2;
 
   dt.setDriveVelocity(vel, pct);
   dt.drive(fwd);
@@ -115,8 +125,6 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
       if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 1 1
       {
         //TODO: Move stop outside of this function
-        dt.stop();
-
         return;
       }
 
@@ -150,6 +158,14 @@ void BackItUp( double distance )
 void Forward( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
 {
   dt.driveFor( directionType::fwd, distance, DUNITS );
+}
+
+void Creep( double distance )
+{
+  const double CREEP_SPEED = 5;
+  dt.setDriveVelocity( CREEP_SPEED, PUNITS );
+  Forward( distance );
+  dt.setDriveVelocity( VROOM_SPEED, PUNITS );
 }
 
 //==================================================================================================================
@@ -186,17 +202,30 @@ void TurnIntoBin()
       vex::task::sleep(40);
     }
 
-    Forward(2.2);
+    Creep(2.5);
     dt.stop();
 
-    //Make sure door is open
-    if (DoorOpen == false){
-      DoorOpen = true;
-      CamMotor.spinTo(90, vex::rotationUnits::deg,true);
-    }
+    OpenDoor();
 
+    dt.setTurnVelocity(8, PUNITS);
+    while( !line_tracker_back.sees_line() )
+    {
+      dt.turn(turnType::left);
+      vex::task::sleep(20);
+    }
+    dt.turnFor(-4, RUNITS);
+    while( line_tracker_back.sees_line() )
+    {
+      dt.turn(turnType::left);
+      vex::task::sleep(20);
+    }
+    dt.turnFor(-15, RUNITS);
+    dt.stop();
+    dt.setTurnVelocity(YAW_SPEED, PUNITS);
     // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-    dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+    // dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+    
+    vex::task::sleep(5000);
 }
 
 //==================================================================================================================
@@ -222,7 +251,7 @@ void ReturnToLine()
 
   dt.stop();
 
-  Forward(0.5);
+  Creep(1.0);
 
   dt.setTurnVelocity(5, PUNITS);
 
@@ -265,17 +294,17 @@ int main()
   Setup();
   RevThoseEngines();
 
-  // ButtonDrop();
+  ButtonDrop();
 
   int laps = 0;
 
-  while (laps++ < 2) {
-
-
     int bins = 0;
 
-    while ( bins++ < 5 ){//&& ticky.time(timeUnits::sec) < 160 ) {
+    while ( bins++ < 5 ) // takes ~34 seconds to enter a bin and then return 
+    {
       SearchForCrossMark();
+      dt.stop();
+
       TurnIntoBin();
 
       ApproachWall();
@@ -288,7 +317,28 @@ int main()
     Park(0);
 
     ChaChaRealSmooth();
-  }
+
+    //------- For now we are running 8 bins
+    
+  bins = 0;
+while ( bins++ < 3 ) // takes ~34 seconds to enter a bin and then return 
+    {
+      SearchForCrossMark();
+      dt.stop();
+
+      TurnIntoBin();
+
+      ApproachWall();
+
+      RaiseBlocks();
+
+      ReturnToLine();
+    }
+
+    Park(0);
+
+    ChaChaRealSmooth();
+    //-------
 
   Park(5);
 
