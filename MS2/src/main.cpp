@@ -27,8 +27,14 @@ void println( const char* c_str )
 //==================================================================================================================
 void Setup()
 {
-  dt.setDriveVelocity( VROOM_SPEED, velocityUnits::pct);
+  dt.setDriveVelocity( VROOM_SPEED, PUNITS);
   dt.setTurnVelocity( YAW_SPEED, PUNITS);
+}
+
+//==================================================================================================================
+void ResumeDriveSpeed()
+{
+  dt.setDriveVelocity( VROOM_SPEED, PUNITS);
 }
 
 // Stamps down and raises the blocks
@@ -63,6 +69,7 @@ void OpenDoor()
       DoorOpen = true;
       CamMotor.spinTo(90, vex::rotationUnits::deg,true);
     }
+    return;
 }
 
 //==================================================================================================================
@@ -86,25 +93,48 @@ void KeepScooting(){
 }
 
 //==================================================================================================================
+void Forward( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
+{
+  dt.driveFor( directionType::fwd, distance, DUNITS );
+}
+
+//==================================================================================================================
+void Reverse( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
+{
+  dt.driveFor( directionType::rev, distance, DUNITS );
+}
+
+//==================================================================================================================
+void Creep( double distance )
+{
+  dt.setDriveVelocity( CREEP_SPEED, PUNITS );
+  Forward( distance );
+  ResumeDriveSpeed();
+}
+
+//==================================================================================================================
+void CreepReverse( double distance )
+{
+  dt.setDriveVelocity( CREEP_SPEED, PUNITS );
+  Reverse( distance );
+  ResumeDriveSpeed();
+}
+
+//==================================================================================================================
 void ButtonDrop()
 {
-  const double vel = 20;
-  //Caroline's VEX made her change this from setVelocity
-  dt.setDriveVelocity(vel, velocityUnits::pct);
-
+  dt.setDriveVelocity(5, PUNITS);
   // drop off the button assembly
-  while(true)
+  while(line_tracker_back_left.sees_line() && line_tracker_back_right.sees_line()) // Need to back up further to touch the wall
   {
-    if( !bumpy.pressing() )
-    {
-      dt.drive(directionType::rev);
-    }
-    else {
-      dt.stop();
-      vex::task::sleep(3000);
-      break;
-    }
+    dt.drive(directionType::rev);
   }
+
+  CreepReverse(1);
+  ResumeDriveSpeed();
+
+  dt.stop();
+  vex::task::sleep(3000);
 
   KeepScooting();
 }
@@ -112,9 +142,9 @@ void ButtonDrop()
 //==================================================================================================================
 void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or stop at a cross mark
 {
-  const int vel = 20;
-  double i = 0;
+  const int vel = VROOM_SPEED;
   const double vel_offset = .2;
+  double i = 0;
 
   dt.setDriveVelocity(vel, pct);
   dt.drive(fwd);
@@ -155,20 +185,6 @@ void BackItUp( double distance )
 }
 
 //==================================================================================================================
-void Forward( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
-{
-  dt.driveFor( directionType::fwd, distance, DUNITS );
-}
-
-void Creep( double distance )
-{
-  const double CREEP_SPEED = 5;
-  dt.setDriveVelocity( CREEP_SPEED, PUNITS );
-  Forward( distance );
-  dt.setDriveVelocity( VROOM_SPEED, PUNITS );
-}
-
-//==================================================================================================================
 void Park( const int cross_marks )
 {
 
@@ -195,8 +211,7 @@ void Park( const int cross_marks )
 //==================================================================================================================
 void TurnIntoBin()
 {
-    // Forward( 7.5 );
-    while ( !line_tracker_back.sees_line() )
+    while ( !line_tracker_back_right.sees_line() )
     {
       dt.drive(fwd);
       vex::task::sleep(40);
@@ -207,51 +222,53 @@ void TurnIntoBin()
 
     OpenDoor();
 
-    dt.setTurnVelocity(8, PUNITS);
-    while( !line_tracker_back.sees_line() )
-    {
-      dt.turn(turnType::left);
-      vex::task::sleep(20);
-    }
-    dt.turnFor(-4, RUNITS);
-    while( line_tracker_back.sees_line() )
-    {
-      dt.turn(turnType::left);
-      vex::task::sleep(20);
-    }
-    dt.turnFor(-15, RUNITS);
-    dt.stop();
-    dt.setTurnVelocity(YAW_SPEED, PUNITS);
     // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-    // dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+    dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+    return;
+
+    // dt.setTurnVelocity(8, PUNITS);
+    // while( !line_tracker_back.sees_line() )
+    // {
+    //   dt.turn(turnType::left);
+    //   vex::task::sleep(20);
+    // }
+    // dt.turnFor(-4, RUNITS);
+    // while( line_tracker_back.sees_line() )
+    // {
+    //   dt.turn(turnType::left);
+    //   vex::task::sleep(20);
+    // }
+    // dt.turnFor(-15, RUNITS);
+    // dt.stop();
+    // dt.setTurnVelocity(YAW_SPEED, PUNITS);
     
-    vex::task::sleep(5000);
+    //vex::task::sleep(5000);
 }
 
 //==================================================================================================================
 void ApproachWall()
 {
-    dt.setDriveVelocity(10, PUNITS);
-    dt.drive(fwd);
+  dt.setDriveVelocity(10, PUNITS);
+  dt.drive(fwd);
 
-    Forward(16);
+  Forward(16);
 
-    dt.stop();
+  dt.stop();
 
-    dt.setDriveVelocity( VROOM_SPEED, PUNITS );
+  ResumeDriveSpeed();
 }
 
 //==================================================================================================================
 void ReturnToLine()
 {
-  while ( !line_tracker_back.sees_line()) {
+  while ( !line_tracker_back_right.sees_line()) {
     dt.drive( directionType::rev );
     vex::task::sleep(100);
   }
 
   dt.stop();
 
-  Creep(1.0);
+  Creep(.5);
 
   dt.setTurnVelocity(5, PUNITS);
 
@@ -279,13 +296,30 @@ void ChaChaRealSmooth() {
 }
 
 //==================================================================================================================
-void HitTheBooty(){
+void ThatsAWrapFolks(){
   dt.setDriveVelocity(VROOM_SPEED/2, PUNITS);
-  while (!bumpy.pressing()){
+ 
+  while(line_tracker_back_left.sees_line() && line_tracker_back_right.sees_line()) // Need to back up further to touch the wall
+  {
     dt.drive(directionType::rev);
   }
 
+  CreepReverse(5);
   dt.stop();
+}
+
+//==================================================================================================================
+void TheConclusionOfThings(){
+  
+  Park(0);
+
+  ChaChaRealSmooth();
+
+  Park(5);
+
+  ChaChaRealSmooth();
+
+  ThatsAWrapFolks();
 }
 
 //==================================================================================================================
@@ -296,11 +330,9 @@ int main()
 
   ButtonDrop();
 
-  int laps = 0;
+  int bins = 0;
 
-    int bins = 0;
-
-    while ( bins++ < 5 ) // takes ~34 seconds to enter a bin and then return 
+    while ( bins++ < 8 ) // takes ~34 seconds to enter a bin and then return 
     {
       SearchForCrossMark();
       dt.stop();
@@ -312,37 +344,15 @@ int main()
       RaiseBlocks();
 
       ReturnToLine();
+
+      if (bins == 5){
+
+        Park(0);
+
+        ChaChaRealSmooth();
+      }
+
     }
 
-    Park(0);
-
-    ChaChaRealSmooth();
-
-    //------- For now we are running 8 bins
-    
-  bins = 0;
-while ( bins++ < 3 ) // takes ~34 seconds to enter a bin and then return 
-    {
-      SearchForCrossMark();
-      dt.stop();
-
-      TurnIntoBin();
-
-      ApproachWall();
-
-      RaiseBlocks();
-
-      ReturnToLine();
-    }
-
-    Park(0);
-
-    ChaChaRealSmooth();
-    //-------
-
-  Park(5);
-
-  ChaChaRealSmooth();
-
-  HitTheBooty();
+  TheConclusionOfThings();
 }

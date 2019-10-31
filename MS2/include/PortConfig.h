@@ -16,9 +16,10 @@ vex::motor CamMotor = vex::motor( vex::PORT5, false );
 vex::drivetrain dt( LeftMotor, RightMotor ); 
 
 // SENSORS
-LineTracker line_tracker_left( line(Brain.ThreeWirePort.H) );
-LineTracker line_tracker_right( line(Brain.ThreeWirePort.G) );
-LineTracker line_tracker_back( line( Brain.ThreeWirePort.D) );
+LineTracker line_tracker_left( line(Brain.ThreeWirePort.G) );
+LineTracker line_tracker_right( line(Brain.ThreeWirePort.H) );
+LineTracker line_tracker_back_right( line( Brain.ThreeWirePort.D) );
+LineTracker line_tracker_back_left( line( Brain.ThreeWirePort.E) );
 
 vex::sonar ultra(Brain.ThreeWirePort.A);
 vex::bumper bumpy( Brain.ThreeWirePort.F );
@@ -31,6 +32,7 @@ constexpr auto RUNITS = rotationUnits::deg;
 // CONSTANTS
 constexpr double VROOM_SPEED = 15;
 constexpr double YAW_SPEED = 15;
+constexpr double CREEP_SPEED = 5;
 
 
 // STATE VARIABLES
