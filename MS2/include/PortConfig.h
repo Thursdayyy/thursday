@@ -26,10 +26,12 @@ vex::bumper bumpy( Brain.ThreeWirePort.F );
 // UNITS
 constexpr auto DUNITS = distanceUnits::in;
 constexpr auto PUNITS = percentUnits::pct;
+constexpr auto RUNITS = rotationUnits::deg;
 
 // CONSTANTS
-constexpr double VROOM_SPEED = 12;
-constexpr double YAW_SPEED = 8;
+constexpr double VROOM_SPEED = 15;
+constexpr double YAW_SPEED = 15;
+
 
 // STATE VARIABLES
 bool DoorOpen = false;
