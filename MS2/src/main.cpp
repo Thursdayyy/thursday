@@ -63,6 +63,7 @@ void OpenDoor()
       DoorOpen = true;
       CamMotor.spinTo(90, vex::rotationUnits::deg,true);
     }
+    return;
 }
 
 //==================================================================================================================
@@ -89,22 +90,16 @@ void KeepScooting(){
 void ButtonDrop()
 {
   const double vel = 20;
-  //Caroline's VEX made her change this from setVelocity
   dt.setDriveVelocity(vel, velocityUnits::pct);
 
   // drop off the button assembly
-  while(true)
+  while(!line_tracker_back_left.sees_line() && !line_tracker_back_right.sees_line())
   {
-    if( !bumpy.pressing() )
-    {
-      dt.drive(directionType::rev);
-    }
-    else {
-      dt.stop();
-      vex::task::sleep(3000);
-      break;
-    }
+    dt.drive(directionType::rev);
   }
+
+  dt.stop();
+  vex::task::sleep(3000);
 
   KeepScooting();
 }
@@ -196,7 +191,7 @@ void Park( const int cross_marks )
 void TurnIntoBin()
 {
     // Forward( 7.5 );
-    while ( !line_tracker_back.sees_line() )
+    while ( !line_tracker_back_right.sees_line() )
     {
       dt.drive(fwd);
       vex::task::sleep(40);
@@ -207,25 +202,27 @@ void TurnIntoBin()
 
     OpenDoor();
 
-    dt.setTurnVelocity(8, PUNITS);
-    while( !line_tracker_back.sees_line() )
-    {
-      dt.turn(turnType::left);
-      vex::task::sleep(20);
-    }
-    dt.turnFor(-4, RUNITS);
-    while( line_tracker_back.sees_line() )
-    {
-      dt.turn(turnType::left);
-      vex::task::sleep(20);
-    }
-    dt.turnFor(-15, RUNITS);
-    dt.stop();
-    dt.setTurnVelocity(YAW_SPEED, PUNITS);
     // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-    // dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+    dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+    return;
+
+    // dt.setTurnVelocity(8, PUNITS);
+    // while( !line_tracker_back.sees_line() )
+    // {
+    //   dt.turn(turnType::left);
+    //   vex::task::sleep(20);
+    // }
+    // dt.turnFor(-4, RUNITS);
+    // while( line_tracker_back.sees_line() )
+    // {
+    //   dt.turn(turnType::left);
+    //   vex::task::sleep(20);
+    // }
+    // dt.turnFor(-15, RUNITS);
+    // dt.stop();
+    // dt.setTurnVelocity(YAW_SPEED, PUNITS);
     
-    vex::task::sleep(5000);
+    //vex::task::sleep(5000);
 }
 
 //==================================================================================================================
@@ -244,7 +241,7 @@ void ApproachWall()
 //==================================================================================================================
 void ReturnToLine()
 {
-  while ( !line_tracker_back.sees_line()) {
+  while ( !line_tracker_back_right.sees_line()) {
     dt.drive( directionType::rev );
     vex::task::sleep(100);
   }
@@ -296,11 +293,9 @@ int main()
 
   ButtonDrop();
 
-  int laps = 0;
+  int bins = 0;
 
-    int bins = 0;
-
-    while ( bins++ < 5 ) // takes ~34 seconds to enter a bin and then return 
+    while ( bins++ < 8 ) // takes ~34 seconds to enter a bin and then return 
     {
       SearchForCrossMark();
       dt.stop();
@@ -312,33 +307,15 @@ int main()
       RaiseBlocks();
 
       ReturnToLine();
+
+      if (bins == 5){
+
+        Park(0);
+
+        ChaChaRealSmooth();
+      }
+
     }
-
-    Park(0);
-
-    ChaChaRealSmooth();
-
-    //------- For now we are running 8 bins
-    
-  bins = 0;
-while ( bins++ < 3 ) // takes ~34 seconds to enter a bin and then return 
-    {
-      SearchForCrossMark();
-      dt.stop();
-
-      TurnIntoBin();
-
-      ApproachWall();
-
-      RaiseBlocks();
-
-      ReturnToLine();
-    }
-
-    Park(0);
-
-    ChaChaRealSmooth();
-    //-------
 
   Park(5);
 
