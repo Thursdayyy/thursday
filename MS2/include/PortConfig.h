@@ -32,6 +32,7 @@ constexpr auto RUNITS = rotationUnits::deg;
 // CONSTANTS
 constexpr double VROOM_SPEED = 15;
 constexpr double YAW_SPEED = 15;
+constexpr double CREEP_SPEED = 5;
 
 
 // STATE VARIABLES
