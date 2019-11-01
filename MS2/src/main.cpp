@@ -9,8 +9,7 @@
 
 #include "vex.h"
 
-#include "LineTracker.h"
-#include "PortConfig.h"
+#include "Driving.h"
 
 using namespace vex;
 
@@ -29,12 +28,6 @@ void Setup()
 {
   dt.setDriveVelocity( VROOM_SPEED, PUNITS);
   dt.setTurnVelocity( YAW_SPEED, PUNITS);
-}
-
-//==================================================================================================================
-void ResumeDriveSpeed()
-{
-  dt.setDriveVelocity( VROOM_SPEED, PUNITS);
 }
 
 // Stamps down and raises the blocks
@@ -84,43 +77,6 @@ void RevThoseEngines()
 }
 
 //==================================================================================================================
-void KeepScooting(){
-  // move past the starting square
-  while ( line_tracker_left.sees_line() && line_tracker_right.sees_line() )
-  {
-    dt.drive(fwd);
-  }
-}
-
-//==================================================================================================================
-void Forward( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
-{
-  dt.driveFor( directionType::fwd, distance, DUNITS );
-}
-
-//==================================================================================================================
-void Reverse( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
-{
-  dt.driveFor( directionType::rev, distance, DUNITS );
-}
-
-//==================================================================================================================
-void Creep( double distance )
-{
-  dt.setDriveVelocity( CREEP_SPEED, PUNITS );
-  Forward( distance );
-  ResumeDriveSpeed();
-}
-
-//==================================================================================================================
-void CreepReverse( double distance )
-{
-  dt.setDriveVelocity( CREEP_SPEED, PUNITS );
-  Reverse( distance );
-  ResumeDriveSpeed();
-}
-
-//==================================================================================================================
 void ButtonDrop()
 {
   dt.setDriveVelocity(5, PUNITS);
@@ -144,6 +100,7 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
 {
   const int vel = VROOM_SPEED;
   const double vel_offset = .2;
+  const int delay = 70;
   double i = 0;
 
   dt.setDriveVelocity(vel, pct);
@@ -154,7 +111,6 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
   {
       if ( line_tracker_left.sees_line() && line_tracker_right.sees_line() ) // 1 1
       {
-        //TODO: Move stop outside of this function
         return;
       }
 
@@ -174,7 +130,7 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
         RightMotor.setVelocity( vel, PUNITS );
       }
 
-    vex::task::sleep(70);
+    vex::task::sleep( delay );
   }
 }
 

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef PORTCONFIG_H
+#define PORTCONFIG_H
+
 #include "vex.h"
 #include "LineTracker.h"
 
@@ -16,12 +18,12 @@ vex::motor CamMotor = vex::motor( vex::PORT5, false );
 vex::drivetrain dt( LeftMotor, RightMotor ); 
 
 // SENSORS
-LineTracker line_tracker_left( line(Brain.ThreeWirePort.G) );
-LineTracker line_tracker_right( line(Brain.ThreeWirePort.H) );
-LineTracker line_tracker_back_right( line( Brain.ThreeWirePort.D) );
-LineTracker line_tracker_back_left( line( Brain.ThreeWirePort.E) );
+LineTracker line_tracker_left( line( Brain.ThreeWirePort.G ) );
+LineTracker line_tracker_right( line( Brain.ThreeWirePort.H ) );
+LineTracker line_tracker_back_right( line( Brain.ThreeWirePort.D ) );
+LineTracker line_tracker_back_left( line( Brain.ThreeWirePort.E ) );
 
-vex::sonar ultra(Brain.ThreeWirePort.A);
+vex::sonar ultra( Brain.ThreeWirePort.A );
 vex::bumper bumpy( Brain.ThreeWirePort.F );
 
 // UNITS
@@ -40,3 +42,5 @@ bool DoorOpen = false;
 
 // TIMER
 timer ticky = vex::timer();
+
+#endif
