@@ -3,6 +3,25 @@
 #include "LineTracker.h"
 #include "PortConfig.h"
 
+void Creep( double distance );
+void CreepReverse( double distance );
+void Forward( double distance );
+void KeepScooting(); // drives forward until the forward line sensors no longer see white. Assumes the robot starts on white.
+void ResumeDriveSpeed();
+void Reverse( double distance );
+void RevThoseEngines();
+
+//==================================================================================================================
+void RevThoseEngines()
+{
+  while (!bumpy.pressing())
+    ;
+
+  ticky.clear();
+
+  task::sleep(500);
+}
+
 //==================================================================================================================
 void ResumeDriveSpeed()
 {
@@ -46,10 +65,3 @@ void KeepScooting()
     dt.drive(fwd);
   }
 }
-
-// void ResumeDriveSpeed();
-// void Forward( double distance );
-// void Reverse( double distance );
-// void Creep( double distance );
-// void CreepReverse( double distance );
-// void KeepScooting(); // drives forward until the forward line sensors no longer see white. Assumes the robot starts on white.
