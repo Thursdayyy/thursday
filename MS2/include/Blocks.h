@@ -1,39 +1,7 @@
 #include "PortConfig.h"
+#include "Driving.h"
+
+extern bool DoorOpen;
 
 void RaiseBlocks();
 void OpenDoor();
-
-// Stamps down and raises the blocks
-//==================================================================================================================
-void RaiseBlocks()
-{
-    // vex::task::sleep( 1000 );
-    // Shut the door
-    CamMotor.spinTo(0, vex::rotationUnits::deg,true);
-    // Stamp down the blocks
-    BlockMotor.setVelocity(100, velocityUnits::pct);
-    BlockMotor.spin(directionType::rev);
-
-    wait(1.5, vex::timeUnits::sec);
-    
-    BlockMotor.stop();
-    
-    // Pick up new blocks
-    BlockMotor.setVelocity(50, velocityUnits::pct);
-    BlockMotor.spin(directionType::fwd);
-    wait(1.2, vex::timeUnits::sec);
-    
-    BlockMotor.stop();
-    DoorOpen = false;
-}
-
-//==================================================================================================================
-void OpenDoor()
-{
-    //Make sure door is open
-    if (DoorOpen == false){
-      DoorOpen = true;
-      CamMotor.spinTo(90, vex::rotationUnits::deg,true);
-    }
-    return;
-}
