@@ -20,10 +20,10 @@ LineTracker line_tracker_back_left( line( Brain.ThreeWirePort.E ) );
 vex::sonar ultra( Brain.ThreeWirePort.A );
 vex::bumper bumpy( Brain.ThreeWirePort.F );
 
+// TIMER
+timer ticky = vex::timer();
+
 // UNITS
 const distanceUnits DUNITS = distanceUnits::in;
 const percentUnits PUNITS = percentUnits::pct;
 const rotationUnits RUNITS = rotationUnits::deg;
-
-// TIMER
-timer ticky = vex::timer();
