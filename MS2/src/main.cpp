@@ -41,9 +41,10 @@ void TheConclusionOfThings()
 int main()
 {
   Setup();
+
   RevThoseEngines();
 
-  ButtonDrop();
+  // ButtonDrop();
 
   int bins = 0;
 

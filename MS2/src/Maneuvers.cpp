@@ -42,38 +42,40 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
 //==================================================================================================================
 void TurnIntoBin()
 {
-    while ( !line_tracker_back_right.sees_line() )
-    {
-      dt.drive(fwd);
-      vex::task::sleep(40);
-    }
+  dt.setDriveVelocity(CREEP_SPEED, PUNITS);
+  dt.drive(fwd);
+  while ( !line_tracker_back_right.sees_line() && !line_tracker_back_left.sees_line() )
+  {
+    vex::task::sleep(40);
+  }
+  ResumeDriveSpeed();
 
-    Creep(2.5);
-    dt.stop();
+  Creep(2.0);
+  dt.stop();
 
-    OpenDoor();
+  OpenDoor();
 
-    // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
-    dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
-    return;
+  // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
+  dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+  return;
 
-    // dt.setTurnVelocity(8, PUNITS);
-    // while( !line_tracker_back.sees_line() )
-    // {
-    //   dt.turn(turnType::left);
-    //   vex::task::sleep(20);
-    // }
-    // dt.turnFor(-4, RUNITS);
-    // while( line_tracker_back.sees_line() )
-    // {
-    //   dt.turn(turnType::left);
-    //   vex::task::sleep(20);
-    // }
-    // dt.turnFor(-15, RUNITS);
-    // dt.stop();
-    // dt.setTurnVelocity(YAW_SPEED, PUNITS);
-    
-    //vex::task::sleep(5000);
+  // dt.setTurnVelocity(8, PUNITS);
+  // while( !line_tracker_back.sees_line() )
+  // {
+  //   dt.turn(turnType::left);
+  //   vex::task::sleep(20);
+  // }
+  // dt.turnFor(-4, RUNITS);
+  // while( line_tracker_back.sees_line() )
+  // {
+  //   dt.turn(turnType::left);
+  //   vex::task::sleep(20);
+  // }
+  // dt.turnFor(-15, RUNITS);
+  // dt.stop();
+  // dt.setTurnVelocity(YAW_SPEED, PUNITS);
+  
+  //vex::task::sleep(5000);
 }
 
 //==================================================================================================================
@@ -99,7 +101,7 @@ void ReturnToLine()
 
   dt.stop();
 
-  Creep(.5);
+  Creep(1);
 
   dt.setTurnVelocity(5, PUNITS);
 
