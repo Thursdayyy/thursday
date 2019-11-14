@@ -16,6 +16,7 @@ LineTracker line_tracker_left( line( Brain.ThreeWirePort.G ) );
 LineTracker line_tracker_right( line( Brain.ThreeWirePort.H ) );
 LineTracker line_tracker_back_right( line( Brain.ThreeWirePort.D ) );
 LineTracker line_tracker_back_left( line( Brain.ThreeWirePort.E ) );
+LineTracker line_tracker_back_center( line( Brain.ThreeWirePort.C ) );
 
 vex::sonar ultra( Brain.ThreeWirePort.A );
 vex::bumper bumpy( Brain.ThreeWirePort.F );

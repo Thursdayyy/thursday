@@ -14,7 +14,7 @@ void RaiseBlocks()
     BlockMotor.setVelocity(100, velocityUnits::pct);
     BlockMotor.spin(directionType::rev);
 
-    wait(0.8, vex::timeUnits::sec);
+    wait(0.6, vex::timeUnits::sec);
     
     BlockMotor.stop();
     
@@ -33,7 +33,7 @@ void OpenDoor()
     //Make sure door is open
     if (DoorOpen == false){
       DoorOpen = true;
-      CamMotor.spinTo(90, vex::rotationUnits::deg,true);
+      CamMotor.spinTo(100, vex::rotationUnits::deg,true);
     }
     return;
 }
