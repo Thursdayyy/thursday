@@ -44,7 +44,7 @@ int main()
 
   RevThoseEngines();
 
-  // ButtonDrop();
+  ButtonDrop();
 
   int bins = 0;
 

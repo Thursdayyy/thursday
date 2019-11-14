@@ -45,18 +45,52 @@ void TurnIntoBin()
   dt.setDriveVelocity(CREEP_SPEED, PUNITS);
   dt.drive(fwd);
   while ( !line_tracker_back_right.sees_line() && !line_tracker_back_left.sees_line() )
-  {
-    vex::task::sleep(40);
-  }
-  ResumeDriveSpeed();
+    Sleep(40);
+  // while ( line_tracker_back_right.sees_line() && line_tracker_back_left.sees_line() )
+  //   Sleep(40);
 
-  Creep(2.0);
+  Creep(2.5);
+
   dt.stop();
 
   OpenDoor();
 
-  // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
+  // RightMotor.setVelocity(10, PUNITS);
+  // LeftMotor.setVelocity(10, PUNITS);
+
+  // RightMotor.spin(fwd);
+  // while( !line_tracker_back_right.sees_line() )
+  //   Sleep(20);
+  // RightMotor.stop();
+  // Sleep(1000);
+
+  // LeftMotor.spin(directionType::rev);
+  // while( !line_tracker_back_left.sees_line() )
+  //   Sleep(20);
+  // LeftMotor.stop();
+  // Sleep(1000);
+
+  // dt.turn(turnType::left);
+  // while( !line_tracker_back_center.sees_line() )
+  //   Sleep(20);
+  // dt.stop();
+  // Sleep(1000);
+  
+
+  dt.setTurnVelocity(CREEP_SPEED, PUNITS);
   dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+  dt.setTurnVelocity(YAW_SPEED, PUNITS);
+
+  // // IDEA: record the movements made to perform the turn into the bin and reverse that movement to exit the bin
+  // Sleep(2000);
+  // dt.turn(turnType::left);
+  // while ( !line_tracker_back_center.sees_line() )
+  // {
+  //   Sleep(30);
+  // }
+
+  // dt.stop();
+
   return;
 
   // dt.setTurnVelocity(8, PUNITS);
@@ -94,19 +128,27 @@ void ApproachWall()
 //==================================================================================================================
 void ReturnToLine()
 {
-  while ( !line_tracker_back_right.sees_line()) {
+  while ( !line_tracker_back_center.sees_line()) {
     dt.drive( directionType::rev );
-    vex::task::sleep(100);
+    vex::task::sleep(50);
   }
 
   dt.stop();
 
-  Creep(1);
+  // dt.setDriveVelocity(CREEP_SPEED, PUNITS);
+  // dt.drive(fwd);
+  // while( !line_tracker_back_center.sees_line() )
+  // {
+  //   Sleep(20);
+  // }
+  // ResumeDriveSpeed();
+  // dt.stop();
+  // Creep(0.5);
 
-  dt.setTurnVelocity(5, PUNITS);
+  dt.setTurnVelocity(CREEP_SPEED, PUNITS);
 
+  dt.turn(turnType::right);
   while (!line_tracker_left.sees_line()) {
-    dt.turn(turnType::right);
     vex::task::sleep(50);
   }
 
@@ -170,18 +212,20 @@ void ThatsAWrapFolks()
 //==================================================================================================================
 void ButtonDrop()
 {
-  dt.setDriveVelocity(5, PUNITS);
+  // dt.setDriveVelocity(5, PUNITS);
   // drop off the button assembly
   while(line_tracker_back_left.sees_line() && line_tracker_back_right.sees_line()) // Need to back up further to touch the wall
   {
     dt.drive(directionType::rev);
   }
 
-  CreepReverse(1);
+  Reverse(1);
   ResumeDriveSpeed();
 
   dt.stop();
-  vex::task::sleep(3000);
+
+  RevThoseEngines();
+  // vex::task::sleep(3000);
 
   KeepScooting();
 }

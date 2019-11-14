@@ -2,8 +2,8 @@
 
 // CONSTANTS
 const double VROOM_SPEED = 15;
-const double YAW_SPEED = 15;
-const double CREEP_SPEED = 5;
+const double YAW_SPEED = 12;
+const double CREEP_SPEED = 8;
 
 //==================================================================================================================
 void RevThoseEngines()
@@ -13,7 +13,7 @@ void RevThoseEngines()
 
   ticky.clear();
 
-  task::sleep(500);
+  task::sleep(200);
 }
 
 //==================================================================================================================
@@ -32,6 +32,12 @@ void Forward( double distance ) // TODO: make it accellerate to max speed instea
 void Reverse( double distance ) // TODO: make it accellerate to max speed instead of immediately starting full speed to prevent jerking
 {
   dt.driveFor( directionType::rev, distance, DUNITS );
+}
+
+//==================================================================================================================
+void Sleep( double sleep_time )
+{
+  vex::task::sleep( sleep_time );
 }
 
 //==================================================================================================================
