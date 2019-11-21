@@ -1,2 +1,3 @@
 build
 *.o
+MS2/compile_commands.json
