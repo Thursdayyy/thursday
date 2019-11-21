@@ -40,14 +40,14 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
 }
 
 //==================================================================================================================
-void TurnIntoBin()
+void TurnIntoBin(double creepin)
 {
   dt.setDriveVelocity(CREEP_SPEED, PUNITS);
   dt.drive(fwd);
   while ( !line_tracker_back_right.sees_line() && !line_tracker_back_left.sees_line() )
     Sleep(40);
 
-  Creep(2.5);
+  Creep(creepin);
 
   dt.stop();
 
@@ -79,7 +79,7 @@ void ApproachWall()
       repeats = 0;
     }
 
-    if (repeats == 20) {
+    if (repeats == 30) {
       return;
     }
 
@@ -105,15 +105,7 @@ void ReturnToLine()
 
   dt.stop();
 
-  // dt.setDriveVelocity(CREEP_SPEED, PUNITS);
-  // dt.drive(fwd);
-  // while( !line_tracker_back_center.sees_line() )
-  // {
-  //   Sleep(20);
-  // }
-  // ResumeDriveSpeed();
-  // dt.stop();
-  Creep(0.2);
+  Creep(0.1);
 
   dt.setTurnVelocity(CREEP_SPEED, PUNITS);
 
@@ -154,7 +146,6 @@ void Park( const int cross_marks )
 //=================================================================================================================
 void ChaChaRealSmooth()
 {
-
   dt.setTurnVelocity(YAW_SPEED, PUNITS);
 
   dt.turnFor(100, rotationUnits::deg);
@@ -175,7 +166,7 @@ void ThatsAWrapFolks()
     dt.drive(directionType::rev);
   }
 
-  CreepReverse(8);
+  CreepReverse(6);
   dt.stop();
 }
 

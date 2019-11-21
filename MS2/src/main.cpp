@@ -25,8 +25,6 @@ void Setup()
 //==================================================================================================================
 void TheConclusionOfThings()
 {
-  
-  // Park(0);
 
   ChaChaRealSmooth();
 
@@ -58,7 +56,7 @@ int main()
 
   task abort_mission = task( MissionAbort );
 
-  // ButtonDrop();
+  ButtonDrop();
 
   int bins = 0;
 
@@ -67,7 +65,12 @@ int main()
       SearchForCrossMark();
       dt.stop();
 
-      TurnIntoBin();
+      if (bins <= 5) {
+      TurnIntoBin(2);
+      }
+      else {
+        TurnIntoBin(1.5);
+      }
 
       ApproachWall();
 
