@@ -38,11 +38,26 @@ void TheConclusionOfThings()
 }
 
 //==================================================================================================================
+int MissionAbort()
+{
+  while ( !bumpy.pressing() )
+  {
+    wait(10, msec);
+  }
+  Brain.Screen.print("abort!");
+  Brain.Screen.newLine();
+  vexSystemExitRequest();
+  return -1;
+}
+
+//==================================================================================================================
 int main()
 {
   Setup();
 
   RevThoseEngines();
+
+  task abort_mission = task( MissionAbort );
 
   ButtonDrop();
 

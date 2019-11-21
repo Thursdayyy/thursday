@@ -13,6 +13,8 @@ void RevThoseEngines()
 
   ticky.clear();
 
+  while ( bumpy.pressing() ) // wait until the button is released to begin
+    ;
   task::sleep(200);
 }
 
