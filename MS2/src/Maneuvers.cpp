@@ -166,28 +166,20 @@ void ThatsAWrapFolks()
     dt.drive(directionType::rev);
   }
 
-  CreepReverse(6);
+  CreepReverse(5);
   dt.stop();
 }
 
 //==================================================================================================================
 void ButtonDrop()
 {
-  dt.setDriveVelocity(10, PUNITS);
+  dt.setDriveVelocity(20, PUNITS);
   // drop off the button assembly
-
-  while(line_tracker_back_left.sees_line() && line_tracker_back_right.sees_line()) // Need to back up further to touch the wall
-  {
-    dt.drive(directionType::rev);
-  }
-
-  Reverse(1);
+  
+  dt.drive(directionType::rev);
+  Sleep(9000);
 
   dt.stop();
-
-  // RevThoseEngines();
-  vex::task::sleep(10000);
-
   dt.setDriveVelocity(5, PUNITS);
 
   KeepScooting();
