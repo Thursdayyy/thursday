@@ -67,3 +67,17 @@ void KeepScooting()
     dt.drive(fwd);
   }
 }
+
+void CorrectForDropOff(){
+
+  dt.setTurnVelocity(5, PUNITS);
+  dt.turn(turnType::left);
+
+  while (!line_tracker_right.sees_line()) {
+    Sleep(50);
+    continue;
+  }
+
+  dt.turnFor(5, RUNITS);
+
+}

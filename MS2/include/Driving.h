@@ -16,3 +16,4 @@ void KeepScooting(); // drives forward until the forward line sensors no longer 
 void ResumeDriveSpeed();
 void Reverse( double distance );
 void RevThoseEngines();
+void CorrectForDropOff();
