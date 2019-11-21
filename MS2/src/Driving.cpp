@@ -71,7 +71,6 @@ void KeepScooting()
 void CorrectForDropOff(){
 
   Forward(1);
-
   dt.setTurnVelocity(5, PUNITS);
   dt.turn(turnType::left);
 

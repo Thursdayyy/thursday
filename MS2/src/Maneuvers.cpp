@@ -182,6 +182,8 @@ void ButtonDrop()
   dt.stop();
   dt.setDriveVelocity(5, PUNITS);
 
+  RightMotor.spinFor(0.5, timeUnits::sec);
+
   KeepScooting();
 
   ResumeDriveSpeed();
