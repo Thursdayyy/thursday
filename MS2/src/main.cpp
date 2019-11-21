@@ -25,12 +25,10 @@ void Setup()
 //==================================================================================================================
 void TheConclusionOfThings()
 {
-  
-  Park(0);
 
   ChaChaRealSmooth();
 
-  Park(4);
+  Park(3);
 
   ChaChaRealSmooth();
 
@@ -44,8 +42,7 @@ int MissionAbort()
   {
     wait(10, msec);
   }
-  Brain.Screen.print("abort!");
-  Brain.Screen.newLine();
+
   vexSystemExitRequest();
   return -1;
 }
@@ -68,7 +65,12 @@ int main()
       SearchForCrossMark();
       dt.stop();
 
-      TurnIntoBin();
+      if (bins < 5) {
+        TurnIntoBin(2);
+      }
+      else {
+        TurnIntoBin(1.5);
+      }
 
       ApproachWall();
 
@@ -78,7 +80,6 @@ int main()
 
       if ( bins == 5 ) // Turn around to begin visiting bins on the other side
       {
-
         Park(0);
 
         ChaChaRealSmooth();
