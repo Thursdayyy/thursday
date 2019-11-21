@@ -65,8 +65,8 @@ int main()
       SearchForCrossMark();
       dt.stop();
 
-      if (bins <= 5) {
-      TurnIntoBin(2);
+      if (bins < 5) {
+        TurnIntoBin(2);
       }
       else {
         TurnIntoBin(1.5);
@@ -80,7 +80,6 @@ int main()
 
       if ( bins == 5 ) // Turn around to begin visiting bins on the other side
       {
-
         Park(0);
 
         ChaChaRealSmooth();
