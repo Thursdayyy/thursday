@@ -26,11 +26,11 @@ void Setup()
 void TheConclusionOfThings()
 {
   
-  Park(0);
+  // Park(0);
 
   ChaChaRealSmooth();
 
-  Park(4);
+  Park(3);
 
   ChaChaRealSmooth();
 
@@ -44,8 +44,7 @@ int MissionAbort()
   {
     wait(10, msec);
   }
-  Brain.Screen.print("abort!");
-  Brain.Screen.newLine();
+
   vexSystemExitRequest();
   return -1;
 }
@@ -59,7 +58,7 @@ int main()
 
   task abort_mission = task( MissionAbort );
 
-  ButtonDrop();
+  // ButtonDrop();
 
   int bins = 0;
 

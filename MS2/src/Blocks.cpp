@@ -33,7 +33,7 @@ void OpenDoor()
     //Make sure door is open
     if (DoorOpen == false){
       DoorOpen = true;
-      CamMotor.spinTo(90, vex::rotationUnits::deg,true);
+      CamMotor.spinTo(-90, vex::rotationUnits::deg,true);
     }
     return;
 }

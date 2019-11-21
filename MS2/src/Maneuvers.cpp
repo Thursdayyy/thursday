@@ -89,9 +89,6 @@ void ApproachWall()
     old_dist = new_dist;
   }
 
-  
-
-  // Forward(16);
 
   dt.stop();
 
@@ -101,9 +98,9 @@ void ApproachWall()
 //==================================================================================================================
 void ReturnToLine()
 {
-  while ( !line_tracker_back_center.sees_line()) {
+  while ( !line_tracker_back_right.sees_line()) {
     dt.drive( directionType::rev );
-    vex::task::sleep(50);
+    vex::task::sleep(10);
   }
 
   dt.stop();
@@ -116,7 +113,7 @@ void ReturnToLine()
   // }
   // ResumeDriveSpeed();
   // dt.stop();
-  // Creep(0.5);
+  Creep(0.2);
 
   dt.setTurnVelocity(CREEP_SPEED, PUNITS);
 
@@ -178,14 +175,14 @@ void ThatsAWrapFolks()
     dt.drive(directionType::rev);
   }
 
-  CreepReverse(5);
+  CreepReverse(8);
   dt.stop();
 }
 
 //==================================================================================================================
 void ButtonDrop()
 {
-  // dt.setDriveVelocity(5, PUNITS);
+  dt.setDriveVelocity(10, PUNITS);
   // drop off the button assembly
 
   while(line_tracker_back_left.sees_line() && line_tracker_back_right.sees_line()) // Need to back up further to touch the wall
@@ -194,13 +191,16 @@ void ButtonDrop()
   }
 
   Reverse(1);
-  ResumeDriveSpeed();
 
   dt.stop();
 
   // RevThoseEngines();
-  vex::task::sleep(3000);
+  vex::task::sleep(10000);
+
+  dt.setDriveVelocity(5, PUNITS);
 
   KeepScooting();
+
+  ResumeDriveSpeed();
   return;
 }
