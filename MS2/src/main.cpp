@@ -58,6 +58,8 @@ int main()
 
   ButtonDrop();
 
+  CorrectForDropOff();
+
   int bins = 0;
 
     while ( bins++ < 8 ) // takes ~34 seconds to enter a bin and then return 
