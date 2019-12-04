@@ -62,17 +62,12 @@ int main()
 
   int bins = 0;
 
-    while ( bins++ < 8 ) // takes ~34 seconds to enter a bin and then return 
+    while ( bins++ < 8 ) // bins represents the # of the bin we are about to visit
     {
       SearchForCrossMark();
       dt.stop();
 
-      if (bins < 5) {
-        TurnIntoBin(2);
-      }
-      else {
-        TurnIntoBin(1.5);
-      }
+      TurnIntoBin( creep_offsets[bins - 1], turn_angles[bins - 1] );
 
       ApproachWall();
 
