@@ -67,16 +67,7 @@ int main()
       SearchForCrossMark();
       dt.stop();
 
-      // if (bins < 5) {
-      //   TurnIntoBin(2);
-      // }
-      // else {
-      //   TurnIntoBin(1.5);
-      // }
-      if( bins == 7 )
-        TurnIntoBin( creep_offsets[bins - 1], 60 );
-      else
-        TurnIntoBin( creep_offsets[bins - 1] );
+      TurnIntoBin( creep_offsets[bins - 1], turn_angles[bins - 1] );
 
       ApproachWall();
 
