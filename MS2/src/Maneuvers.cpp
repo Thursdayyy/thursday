@@ -1,5 +1,8 @@
 #include "Maneuvers.h"
 
+const double creep_offsets[8] = { 2.3, 2.3, 2.2, 2.3, 1.9, 1.9, 2.2, 1.7 };
+const double turn_angles[8] = { 58, 58, 58, 58, 58, 58, 60, 58 };
+
 //==================================================================================================================
 void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or stop at a cross mark
 {
@@ -40,7 +43,7 @@ void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or sto
 }
 
 //==================================================================================================================
-void TurnIntoBin(double creepin)
+void TurnIntoBin( double creepin, double left_turn_angle )
 {
   dt.setDriveVelocity(CREEP_SPEED, PUNITS);
   dt.drive(fwd);
@@ -54,7 +57,7 @@ void TurnIntoBin(double creepin)
   OpenDoor();
 
   dt.setTurnVelocity(CREEP_SPEED, PUNITS);
-  dt.turnFor(-58, vex::rotationUnits::deg); // TODO: change this absolute value into something more consistent
+  dt.turnFor(-left_turn_angle, vex::rotationUnits::deg); // negative because it's a left turn
   dt.setTurnVelocity(YAW_SPEED, PUNITS);
 
   return;
