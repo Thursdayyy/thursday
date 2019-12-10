@@ -48,13 +48,27 @@ int MissionAbort()
 }
 
 //==================================================================================================================
+int TimesUpYouFools(){
+
+  ticky.clear();
+
+  while (ticky.time(timeUnits::sec) < 180){
+    wait(1, sec);  
+  }
+  
+  vexSystemExitRequest();
+  return -1;
+}
+
+
+//==================================================================================================================
 int main()
 {
   Setup();
 
   RevThoseEngines();
 
-  // task abort_mission = task( MissionAbort );
+  task stop_that = task( TimesUpYouFools );
 
   ButtonDrop();
 
@@ -62,7 +76,7 @@ int main()
 
   int bins = 0;
 
-    while ( bins++ < 8 ) // bins represents the # of the bin we are about to visit
+    while ( bins++ < 8 && ticky.time(timeUnits::sec) < 180) // bins represents the # of the bin we are about to visit
     {
       SearchForCrossMark();
       dt.stop();
@@ -83,6 +97,11 @@ int main()
       }
 
     }
+
+  if (ticky.time(timeUnits::sec) >= 180) {
+    dt.stop();
+    vexSystemExitRequest();
+  }
 
   TheConclusionOfThings();
 }

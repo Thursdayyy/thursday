@@ -14,14 +14,14 @@ void RaiseBlocks()
     BlockMotor.setVelocity(100, velocityUnits::pct);
     BlockMotor.spin(directionType::rev);
 
-    wait(0.8, vex::timeUnits::sec);
+    wait(1.2, vex::timeUnits::sec);
     
     BlockMotor.stop();
     
     // Pick up new blocks
     BlockMotor.setVelocity(50, velocityUnits::pct);
     BlockMotor.spin(directionType::fwd);
-    wait(0.5, vex::timeUnits::sec);
+    wait(0.7, vex::timeUnits::sec);
     
     BlockMotor.stop();
     DoorOpen = false;

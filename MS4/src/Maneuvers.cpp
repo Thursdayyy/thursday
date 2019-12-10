@@ -1,7 +1,7 @@
 #include "Maneuvers.h"
 
 const double creep_offsets[8] = { 2.4, 2.3, 2.2, 2.3, 1.9, 1.9, 2.2, 1.7 };
-const double turn_angles[8] = { 58, 58, 58, 58, 58, 58, 60, 58 };
+const double turn_angles[8] = { 56, 57, 57, 58, 58, 58, 60, 58 };
 
 //==================================================================================================================
 void SearchForCrossMark() // TODO: maybe add a flag to decide to continue or stop at a cross mark
@@ -117,7 +117,7 @@ void ReturnToLine()
     vex::task::sleep(50);
   }
 
-  dt.turnFor(-4, rotationUnits::deg);
+  dt.turnFor(-5, rotationUnits::deg);
 
   dt.setTurnVelocity( YAW_SPEED, PUNITS );
 }
@@ -169,7 +169,7 @@ void ThatsAWrapFolks()
     dt.drive(directionType::rev);
   }
 
-  CreepReverse(9);
+  CreepReverse(7);
   dt.stop();
 }
 
@@ -181,7 +181,7 @@ void ButtonDrop()
   dt.drive(directionType::rev);
   Sleep(3000);
   dt.stop();
-  Sleep(3000);
+  Sleep(5000);
 
   dt.setDriveVelocity(5, PUNITS);
 
