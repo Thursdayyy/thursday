@@ -1,6 +1,6 @@
 #include "Maneuvers.h"
 
-const double creep_offsets[8] = { 2.3, 2.3, 2.2, 2.3, 1.9, 1.9, 2.2, 1.7 };
+const double creep_offsets[8] = { 2.4, 2.3, 2.2, 2.3, 1.9, 1.9, 2.2, 1.7 };
 const double turn_angles[8] = { 58, 58, 58, 58, 58, 58, 60, 58 };
 
 //==================================================================================================================
@@ -71,7 +71,7 @@ void ApproachWall()
   
   int old_dist = 0;
   int repeats = 0;
-  while (ultra.distance(DUNITS) > 1.3) {
+  while (ultra.distance(DUNITS) > 1.4) {
 
     int new_dist = ultra.distance(DUNITS);
 
@@ -169,7 +169,7 @@ void ThatsAWrapFolks()
     dt.drive(directionType::rev);
   }
 
-  CreepReverse(5);
+  CreepReverse(9);
   dt.stop();
 }
 
@@ -180,12 +180,14 @@ void ButtonDrop()
   // drop off the button assembly
   
   dt.drive(directionType::rev);
-  Sleep(9000);
-
+  Sleep(3000);
   dt.stop();
+  Sleep(3000);
+
+  // dt.stop();
   dt.setDriveVelocity(5, PUNITS);
 
-  RightMotor.spinFor(0.5, timeUnits::sec);
+  // RightMotor.spinFor(0.5, timeUnits::sec);
 
   KeepScooting();
 

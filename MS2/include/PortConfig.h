@@ -27,6 +27,7 @@ extern LineTracker line_tracker_back_center;
 
 extern vex::sonar ultra;
 extern vex::bumper bumpy;
+extern vex::bumper bumpy2;
 
 // TIMER
 extern timer ticky;
