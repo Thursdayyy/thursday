@@ -54,7 +54,7 @@ int main()
 
   RevThoseEngines();
 
-  task abort_mission = task( MissionAbort );
+  // task abort_mission = task( MissionAbort );
 
   ButtonDrop();
 
