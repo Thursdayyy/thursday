@@ -58,7 +58,7 @@ int main()
 
   ButtonDrop();
 
-  CorrectForDropOff();
+  // CorrectForDropOff();
 
   int bins = 0;
 
